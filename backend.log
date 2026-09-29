@@ -1,0 +1,98 @@
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.121.86:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 832-719-211
+ * Detected change in '/home/joao/foxxpi/backend/database.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 832-719-211
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.121.86:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 330-132-134
+ * Detected change in '/home/joao/foxxpi/backend/scraper.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 330-132-134
+ * Detected change in '/home/joao/foxxpi/backend/scraper.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 330-132-134
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.121.86:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 756-592-496
+127.0.0.1 - - [29/Sep/2026 10:47:36] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:47:38] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:47:39] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:47:40] "GET /api/noticias HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:47:48] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:49:43] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:49:46] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:49:47] "GET /api/noticias HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:49:48] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:49:54] "GET /api/noticias HTTP/1.1" 200 -
+ * Detected change in '/home/joao/foxxpi/backend/scraper.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 756-592-496
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.121.86:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 124-648-246
+127.0.0.1 - - [29/Sep/2026 10:54:29] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:54:32] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:54:34] "GET /api/noticias HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:54:37] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:54:56] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:55:00] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:55:01] "GET /api/noticias HTTP/1.1" 200 -
+ * Detected change in '/home/joao/foxxpi/backend/scraper.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 124-648-246
+ * Detected change in '/home/joao/foxxpi/backend/scraper.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 124-648-246
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.121.86:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 501-854-375
+127.0.0.1 - - [29/Sep/2026 10:56:46] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:56:48] "GET /api/noticias HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:57:50] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:57:51] "GET /api/noticias HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:57:52] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:57:55] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 10:57:56] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
