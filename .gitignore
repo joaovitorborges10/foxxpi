@@ -1,1 +1,7 @@
 run_scraper.sh
+venv/
+.venv/
+__pycache__/
+*.log
+.env
+.vscode/
