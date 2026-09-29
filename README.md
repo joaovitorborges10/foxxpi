@@ -19,7 +19,6 @@ O **FoxxPI** é um projeto de automação desenvolvido para capturar e centraliz
 - **Automação:** Shell Scripting (`bash`) e `cron` no Linux
 
 ---
-
 ## ⚙️ Estrutura do Projeto
 
 ```text
@@ -32,6 +31,7 @@ foxxpi/
 │   ├── index.html                  # Interface do utilizador
 │   ├── app.js                      # Consumo da API e atualização em tempo real
 │   └── style.css                   # Estilização do painel de notícias
+├── database_autodelete_cron.sql    # Agendador do MySQL para purga automática de dados antigos
 ├── foxxpi_database_schema.sql      # Estrutura e tabelas do MySQL
 ├── run_scraper.sh                  # Script de automação e gestão de processos
 ├── requirements.txt                # Dependências do ecossistema Python
