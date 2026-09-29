@@ -1,8 +1,15 @@
 import re
+from datetime import datetime
 from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 from database import obter_conexao
+
+# URL de destino
+URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
+
+# Data limite para filtro: 01 de Agosto de 2026
+DATA_CORTE = datetime(2026, 8, 1)
 
 # Listas de palavras-chave para filtro
 KEYWORDS_TECH = [
@@ -40,7 +47,6 @@ def classificar_noticia(titulo):
     eh_tech = contem_palavra_chave(titulo_lc, KEYWORDS_TECH)
     eh_evento = contem_palavra_chave(titulo_lc, KEYWORDS_EVENTOS)
     
-    # Evento focado em TI ou Ciência/Inovação vai direto para Eventos Tech
     if eh_tech and eh_evento:
         return 'Evento de Software', True
     elif eh_tech:
@@ -50,79 +56,99 @@ def classificar_noticia(titulo):
     
     return 'Geral', False
 
+def parse_data(data_str):
+    """Converte 'dd/mm/aa' ou 'dd/mm/yyyy' para objeto datetime."""
+    try:
+        data_str = data_str.strip()
+        if len(data_str.split('/')[-1]) == 2:
+            return datetime.strptime(data_str, "%d/%m/%y")
+        return datetime.strptime(data_str, "%d/%m/%Y")
+    except (ValueError, AttributeError):
+        return None
+
 def monitorar_homepage():
-    url_homepage = "https://www4.unievangelica.edu.br/" 
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     
     conn = None
     cursor = None
 
     try:
-        response = requests.get(url_homepage, headers=headers, timeout=15)
+        response = requests.get(URL_NOTICIAS, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # 1. PASSO DE LIMPEZA: Elimina elementos de navegação e estrutura antes de buscar artigos
+        # 1. Limpeza de elementos de navegação/ruído
         for lixo in soup.select('nav, footer, header, aside, .menu, .sidebar, .footer, .btn, .botao, .atendimento'):
             lixo.decompose()
 
-        # 2. SELEÇÃO DE ARTIGOS
+        # 2. Seleção de artigos/cards
         artigos = soup.select('article, div.noticia, .post-item, .card, a[href*="noticia"]')
 
         conn = obter_conexao()
         cursor = conn.cursor()
-        novas_noticias = 0
+        noticias_processadas = 0
         links_processados = set()
 
-        # 3. FILTRAGEM E VALIDAÇÃO DOS ITENS
+        # 3. Filtragem, limite de 20 e gravação
         for item in artigos:
+            # Trava para capturar no máximo 20 notícias por execução
+            if noticias_processadas >= 20:
+                break
+
             link_tag = item if item.name == 'a' else item.find('a')
             if not link_tag or not link_tag.get('href'):
                 continue
 
-            # Limpa o texto tirando espaços extras/quebras de linha internas
+            # Extração e validação da data via tag <span>
+            span_data = item.find('span')  # Ajuste a classe se necessário (ex: item.find('span', class_='data'))
+            data_noticia = parse_data(span_data.text) if span_data else None
+
+            # Filtro de data: se houver data e for anterior a 01/08/2026, descarta
+            if data_noticia and data_noticia < DATA_CORTE:
+                continue
+
+            # Limpeza do título
             titulo_raw = " ".join(link_tag.get_text(strip=True).split())
-            
-            # Insere espaço entre letras e números grudados (ex: "Anápolis16º" -> "Anápolis 16º")
             titulo = re.sub(r'([a-zA-ZáàâãéèêíóôõúçÁÀÂÃÉÈÊÍÓÔÕÚÇ])(\d+º?)', r'\1 \2', titulo_raw)
             
             link_bruto = link_tag['href'].strip()
 
-            # Ignora títulos curtos/vazios
             if not titulo or len(titulo) < 15:
                 continue
 
-            # Trava contra termos institucionais e botões soltos
             titulo_lc = titulo.lower()
             if any(termo in titulo_lc for termo in KEYWORDS_IGNORAR):
                 continue
 
-            # Trata URLs relativas/absolutas corretamente
-            link = urljoin(url_homepage, link_bruto)
+            link = urljoin(URL_NOTICIAS, link_bruto)
 
-            # Evita reprocessar o mesmo link no mesmo ciclo
             if link in links_processados:
                 continue
             links_processados.add(link)
 
             categoria, eh_relevante = classificar_noticia(titulo)
+            data_sql = data_noticia.strftime("%Y-%m-%d") if data_noticia else None
 
+            # SQL utilizando ON DUPLICATE KEY UPDATE para atualizar dados sem duplicar
             sql = """
-                INSERT IGNORE INTO noticias (titulo, link, categoria, eh_relevante) 
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO noticias (titulo, link, categoria, eh_relevante, data_publicacao) 
+                VALUES (%s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                    titulo = VALUES(titulo),
+                    categoria = VALUES(categoria),
+                    eh_relevante = VALUES(eh_relevante),
+                    data_publicacao = COALESCE(VALUES(data_publicacao), data_publicacao)
             """
-            cursor.execute(sql, (titulo, link, categoria, eh_relevante))
-            
-            if cursor.rowcount > 0:
-                novas_noticias += 1
+            cursor.execute(sql, (titulo, link, categoria, eh_relevante, data_sql))
+            noticias_processadas += 1
 
         conn.commit()
-        print(f"[FoxxPI Scraper] Homepage varrida com sucesso. Novas entradas: {novas_noticias}")
+        print(f"[FoxxPI Scraper] Processamento concluído. Itens verificados/atualizados: {noticias_processadas}")
 
     except Exception as e:
         if conn:
             conn.rollback()
-        print(f"[FoxxPI Scraper] Erro durante a varredura da homepage: {e}")
+        print(f"[FoxxPI Scraper] Erro durante a varredura: {e}")
 
     finally:
         if cursor:

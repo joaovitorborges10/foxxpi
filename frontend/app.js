@@ -3,6 +3,34 @@ const API_URL = 'http://localhost:5000/api/noticias';
 // Guarda o filtro ativo para manter a escolha do utilizador na atualização automática
 let filtroAtual = 'relevantes=true';
 
+// Função auxiliar para formatar datas sem gerar Invalid Date
+function formatarDataSegura(dataValor) {
+    if (!dataValor || dataValor === 'null') return 'Data não informada';
+
+    // Se já vier no formato DD/MM/AAAA (ex: "15/08/2026")
+    if (typeof dataValor === 'string' && dataValor.includes('/')) {
+        return dataValor;
+    }
+
+    // Trata formato ISO / MySQL (ex: "2026-08-15" ou "2026-08-15T14:30:00")
+    if (typeof dataValor === 'string' && dataValor.includes('-')) {
+        const apenasData = dataValor.split('T')[0];
+        const partes = apenasData.split('-');
+        if (partes.length === 3) {
+            const [ano, mes, dia] = partes;
+            return `${dia}/${mes}/${ano}`;
+        }
+    }
+
+    // Tenta conversão genérica se for objeto Date ou timestamp válido
+    const dataObj = new Date(dataValor);
+    if (!isNaN(dataObj.getTime())) {
+        return dataObj.toLocaleDateString('pt-BR');
+    }
+
+    return 'Data não informada';
+}
+
 async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
     const container = document.getElementById('news-container');
     
@@ -31,14 +59,15 @@ async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
             if (item.categoria === 'Tecnologia') badgeClass = 'badge-tech';
             if (item.categoria && item.categoria.includes('Evento')) badgeClass = 'badge-evento';
 
-            const dataFormatada = new Date(item.capturado_em).toLocaleString('pt-BR');
+            // Prioriza a data de publicação da notícia; recua para a data de registro se vazia
+            const dataExibicao = formatarDataSegura(item.data_publicacao || item.criado_em);
 
             card.innerHTML = `
                 <span class="badge ${badgeClass}">${item.categoria || 'Geral'}</span>
                 <h3>
                     <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
                 </h3>
-                <div class="meta">Capturado em: ${dataFormatada}</div>
+                <div class="meta">Publicado em: ${dataExibicao}</div>
             `;
 
             container.appendChild(card);
