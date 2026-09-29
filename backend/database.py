@@ -4,9 +4,9 @@ import mysql.connector
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'foxxpiroot',  # Altere para sua senha do container Docker
+    'password': 'foxxpiroot',   # Senha do container/banco MySQL
     'database': 'foxxpi_database',
-    'connect_timeout': 10     # Aumenta o tempo limite de conexão para evitar erro 2013 no boot
+    'connect_timeout': 10      # Evita timeout no boot do sistema
 }
 
 def obter_conexao(tentativas=3, espera=2):
@@ -25,7 +25,7 @@ def obter_conexao(tentativas=3, espera=2):
             time.sleep(espera)
 
 def inicializar_banco():
-    """Cria o banco de dados e a tabela caso ainda não existam."""
+    """Cria o banco de dados e a tabela de notícias garantindo compatibilidade com a API."""
     config_sem_db = DB_CONFIG.copy()
     del config_sem_db['database']
     
@@ -33,7 +33,7 @@ def inicializar_banco():
     cursor = None
     
     try:
-        # Usa lógica de reconexão também na inicialização
+        # Usa lógica de reconexão na inicialização
         for i in range(3):
             try:
                 conn = mysql.connector.connect(**config_sem_db)
@@ -45,11 +45,11 @@ def inicializar_banco():
 
         cursor = conn.cursor()
         
-        # Garante o uso do mesmo nome do banco configurado no DB_CONFIG
         db_name = DB_CONFIG['database']
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
         cursor.execute(f"USE {db_name};")
         
+        # Tabela com as colunas sincronizadas com o app.js e main.py
         tabela_query = """
         CREATE TABLE IF NOT EXISTS noticias (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,7 +57,8 @@ def inicializar_banco():
             link VARCHAR(500) UNIQUE NOT NULL,
             categoria VARCHAR(50) DEFAULT 'Geral',
             eh_relevante BOOLEAN DEFAULT FALSE,
-            capturado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            data_publicacao VARCHAR(50) NULL,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """
         cursor.execute(tabela_query)
@@ -69,7 +70,7 @@ def inicializar_banco():
     finally:
         if cursor:
             cursor.close()
-        if conn:
+        if conn and conn.is_connected():
             conn.close()
 
 if __name__ == "__main__":

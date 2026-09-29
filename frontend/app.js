@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api/noticias';
+// Descobre automaticamente o IP ou hostname da máquina onde a API está a correr
+const API_URL = `http://${window.location.hostname}:5000/api/noticias`;
 
 // Guarda o filtro ativo para manter a escolha do utilizador na atualização automática
 let filtroAtual = 'relevantes=true';

@@ -3,10 +3,13 @@ from flask_cors import CORS
 from database import obter_conexao
 
 app = Flask(__name__)
-CORS(app)  # Libera o acesso para o JavaScript
+# Garante que qualquer origem/dispositivo na rede local consiga fazer requisições
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route('/api/noticias', methods=['GET'])
 def listar_noticias():
+    conn = None
+    cursor = None
     try:
         relevantes = request.args.get('relevantes')
         categoria = request.args.get('categoria')
@@ -28,14 +31,19 @@ def listar_noticias():
         cursor.execute(query, params)
         noticias = cursor.fetchall()
 
-        cursor.close()
-        conn.close()
-
         return jsonify(noticias)
+
     except Exception as e:
         print(f"[FoxxPI Erro API]: {e}")
         return jsonify({"erro": str(e)}), 500
 
+    finally:
+        # Bloco 'finally' garante o encerramento da conexão mesmo se houver erro na consulta
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
+
 if __name__ == '__main__':
-    # Sobe o servidor no IP 0.0.0.0 (acessível de dentro do WSL e do Windows)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Sobe o servidor no IP 0.0.0.0 e desativa o debug em background para evitar duplicar processos
+    app.run(host='0.0.0.0', port=5000, debug=False)
