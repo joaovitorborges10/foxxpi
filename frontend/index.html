@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoxxPI — News Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦊</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦊 FoxxPI</h1>
+            <p>Acompanhe Integralmente Notícias e Avisos de Tecnologia e Eng. Software UniEVANGÉLICA!</p>
+            <a href="https://github.com/joaovitorborges10/foxxpi" target="_blank" rel="noopener noreferrer">
+                github.com/joaovitorborges10/foxxpi
+            </a>
+        </header>
+
+        <div class="filter-bar">
+            <button class="btn active" onclick="filtrar('relevantes=true', this)">🎯 Eng. Software & Tech</button>
+            <button class="btn" onclick="filtrar('categoria=Evento de Software', this)">📅 Eventos Tech</button>
+            <button class="btn" onclick="filtrar('', this)">🌐 Todas as Notícias</button>
+        </div>
+
+        <main id="news-container">
+            <p class="loading">Carregando notícias...</p>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

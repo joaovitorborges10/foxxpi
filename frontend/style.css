@@ -1,0 +1,90 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 2rem;
+}
+
+.container { max-width: 800px; margin: 0 auto; }
+
+header { margin-bottom: 1.5rem; text-align: center; }
+header h1 { font-size: 2rem; color: #f97316; }
+header p { color: #94a3b8; font-size: 0.95rem; }
+
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover, .btn.active {
+    background: #ea580c;
+    color: #ffffff;
+    border-color: #f97316;
+}
+
+.card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.badge-tech { background: #06b6d4; color: #000; }
+.badge-evento { background: #10b981; color: #000; }
+.badge-geral { background: #64748b; color: #fff; }
+
+.card h3 a {
+    color: #f1f5f9;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.card h3 a:hover { color: #38bdf8; }
+
+.meta {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 8px;
+}
+
+/* Cor base do link em laranja */
+a {
+  color: #ff6600; /* Laranja padrão */
+  text-decoration: none; /* Remove o sublinhado, se desejar */
+}
+
+/* Cor ao passar o mouse por cima (tom ligeiramente mais escuro) */
+a:hover {
+  color: #e65c00;
+  text-decoration: underline;
+}
+
+/* Mantém o laranja mesmo após o link ser visitado */
+a:visited {
+  color: #ff6600;
+}
