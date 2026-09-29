@@ -1,8 +1,15 @@
 const API_URL = 'http://localhost:5000/api/noticias';
 
-async function carregarNoticias(queryParams = 'relevantes=true') {
+// Guarda o filtro ativo para manter a escolha do utilizador na atualização automática
+let filtroAtual = 'relevantes=true';
+
+async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
     const container = document.getElementById('news-container');
-    container.innerHTML = '<p class="loading">Buscando notícias no FoxxPI...</p>';
+    
+    // Só mostra o texto de carregamento na primeira busca ou ao clicar num botão
+    if (!silencioso) {
+        container.innerHTML = '<p class="loading">Buscando notícias no FoxxPI...</p>';
+    }
 
     try {
         const response = await fetch(`${API_URL}?${queryParams}`);
@@ -22,12 +29,12 @@ async function carregarNoticias(queryParams = 'relevantes=true') {
             // Escolhe a classe da tag visual
             let badgeClass = 'badge-geral';
             if (item.categoria === 'Tecnologia') badgeClass = 'badge-tech';
-            if (item.categoria.includes('Evento')) badgeClass = 'badge-evento';
+            if (item.categoria && item.categoria.includes('Evento')) badgeClass = 'badge-evento';
 
             const dataFormatada = new Date(item.capturado_em).toLocaleString('pt-BR');
 
             card.innerHTML = `
-                <span class="badge ${badgeClass}">${item.categoria}</span>
+                <span class="badge ${badgeClass}">${item.categoria || 'Geral'}</span>
                 <h3>
                     <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
                 </h3>
@@ -39,17 +46,31 @@ async function carregarNoticias(queryParams = 'relevantes=true') {
 
     } catch (error) {
         console.error('Erro na requisição:', error);
-        container.innerHTML = '<p class="loading" style="color:#ef4444;">Erro ao conectar com a API do FoxxPI.</p>';
+        if (!silencioso) {
+            container.innerHTML = '<p class="loading" style="color:#ef4444;">Erro ao conectar com a API do FoxxPI.</p>';
+        }
     }
 }
 
 function filtrar(queryParams, botao) {
-    // Atualiza o estado dos botões
+    // Guarda o novo filtro ativo
+    filtroAtual = queryParams;
+
+    // Atualiza o estado visual dos botões
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
     botao.classList.add('active');
 
-    carregarNoticias(queryParams);
+    // Executa a busca visível (com indicação de carregamento)
+    carregarNoticias(queryParams, false);
 }
 
-// Inicializa buscando conteúdos de Tecnologia e Eng. de Software por padrão
-document.addEventListener('DOMContentLoaded', () => carregarNoticias('relevantes=true'));
+// Inicializa o script quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Busca inicial
+    carregarNoticias(filtroAtual, false);
+
+    // 2. Atualização automática em segundo plano a cada 30 segundos (30000 ms)
+    setInterval(() => {
+        carregarNoticias(filtroAtual, true);
+    }, 30000);
+});
