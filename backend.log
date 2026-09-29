@@ -96,3 +96,7 @@
 127.0.0.1 - - [29/Sep/2026 10:57:52] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
 127.0.0.1 - - [29/Sep/2026 10:57:55] "GET /api/noticias?categoria=Evento%20de%20Software HTTP/1.1" 200 -
 127.0.0.1 - - [29/Sep/2026 10:57:56] "GET /api/noticias?relevantes=true HTTP/1.1" 200 -
+Traceback (most recent call last):
+  File "/home/joao/Estudos_Eng_Software/foxxpi/backend/main.py", line 1, in <module>
+    from flask import Flask, jsonify, request
+ModuleNotFoundError: No module named 'flask'

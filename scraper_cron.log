@@ -59,3 +59,11 @@ KeyboardInterrupt
 [FoxxPI DB] Tentativa 1 de conexão falhou. Tentando novamente em 2s...
 [FoxxPI Scraper] Homepage varrida com sucesso. Novas entradas: 0
 === Concluído em Tue Sep 29 10:56:43 -03 2026 ===
+=== Executando Scraper FoxxPI em ter 29 set 2026 13:31:58 -03 ===
+Traceback (most recent call last):
+  File "/home/joao/Estudos_Eng_Software/foxxpi/backend/scraper.py", line 5, in <module>
+    from database import obter_conexao
+  File "/home/joao/Estudos_Eng_Software/foxxpi/backend/database.py", line 2, in <module>
+    import mysql.connector
+ModuleNotFoundError: No module named 'mysql'
+=== Concluído em ter 29 set 2026 13:32:02 -03 ===
