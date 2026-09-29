@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS foxxpi_database;
+USE foxxpi_database;
+
+CREATE TABLE IF NOT EXISTS noticias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    link VARCHAR(500) UNIQUE NOT NULL,
+    categoria VARCHAR(50) DEFAULT 'Geral',
+    eh_relevante BOOLEAN DEFAULT FALSE,
+    capturado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
