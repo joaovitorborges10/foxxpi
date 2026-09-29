@@ -1,7 +1,7 @@
 run_scraper.sh
+*.log
+backend.log
+scraper_cron.log
 venv/
 .venv/
 __pycache__/
-*.log
-.env
-.vscode/
