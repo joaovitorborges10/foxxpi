@@ -1,2 +1,2 @@
 # foxxpi
-A Simple WebWrapper Agent for Track News & Alerts from UniEVANGÉLICA's WebPages.
+A Simple Webwrapper Agent Writed in Python for Track News & Alerts from UniEVANGÉLICA Campus.
