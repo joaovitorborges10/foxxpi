@@ -35,7 +35,7 @@ Siga os passos abaixo no terminal:
    ```bash
    ./run_scraper.sh
    ```
-4. Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
+> 4. Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
 ## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
