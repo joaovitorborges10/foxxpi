@@ -2,7 +2,7 @@
 
 > Um agente simples de raspagem de dados (*web scraping*) escrito em Python para monitorar notícias e avisos do *campus* da UniEVANGÉLICA.
 
-## 🛠️ Arquitetura e Tecnologias
+## 🛠️  Arquitetura e Tecnologias
 
 - **Linguagem:** Python 3
 - **Base de Dados:** MySQL (`foxxpi_database`)
@@ -39,7 +39,7 @@ Siga os passos abaixo no terminal:
    ```
 4. Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
-## 🗑️  Encerramento de Processos e Reset Completo do Ambiente
+## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
 6. Caso Seja Necessário o Encerramento dos processos utilize o script (stop_services.sh)
   ```bash
@@ -53,7 +53,7 @@ Siga os passos abaixo no terminal:
    ./reset_all.sh
    ```
 
-## ⚙️ Estrutura do Projeto
+## ⚙️  Estrutura do Projeto
 
  ```text 
 foxxpi/
