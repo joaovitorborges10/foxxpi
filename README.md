@@ -45,7 +45,7 @@ Siga os passos abaixo no terminal:
    ./stop_services.sh
   ```
 
-2. Para **ELIMINAR** todo o serviço incluindo **DESTRUIR** o Container MySQL (Banco de Dados) utilize o script **reset_all.sh**
+2. Para **ELIMINAR** todo o serviço incluindo **DESTRUIR** o Banco de Dados utilize o script **reset_all.sh**
   ```bash
    chmod +x stop_services.sh
    ./reset_all.sh
