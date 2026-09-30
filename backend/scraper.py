@@ -56,6 +56,17 @@ def classificar_noticia(titulo):
     
     return 'Geral', False
 
+import re
+
+def validar_palavra_programacao(texto):
+    texto = texto.lower()
+    
+    # Ignora se for "programação com", "programação do evento", "programação cultural"
+    if re.search(r'programação\s+(com|do|da|de|cultural|geral|oficial)', texto):
+        return False
+        
+    return True
+
 def parse_data(data_str):
     """Converte 'dd/mm/aa' ou 'dd/mm/yyyy' para objeto datetime."""
     try:

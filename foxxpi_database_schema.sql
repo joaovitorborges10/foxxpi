@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS noticias (
     link VARCHAR(500) UNIQUE NOT NULL,
     categoria VARCHAR(50) DEFAULT 'Geral',
     eh_relevante BOOLEAN DEFAULT FALSE,
+    data_publicacao DATE,
     capturado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
