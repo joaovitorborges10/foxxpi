@@ -54,7 +54,7 @@ Siga os passos abaixo no terminal:
    chmod +x reset_all.sh
    ./reset_all.sh
    ```
-> Também podendo ser utilizado para regenerar o ambiente de eventuais incoerências e recriar o ecossistema como um todo a partir dos passos especificados nas guias anteriores desse README.md
+> Também podendo ser utilizado para regenerar o ambiente em eventuais incoerências e recriar o ecossistema como um todo a partir dos passos especificados nas guias anteriores desse README.md
 
 ## ⚙️  Estrutura do Projeto
 
