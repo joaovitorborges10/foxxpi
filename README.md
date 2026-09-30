@@ -18,6 +18,8 @@ Para colocar o projeto em funcionamento em um ambiente **Linux**, certifique-se 
 - **Tailscale** configurado
 - *(Opcional)* Vercel CLI via `npm` (ferramenta usada opcionalmente apenas para fins de deploy/serverless, sem ligação direta com a execução local do projeto).
 
+---
+
 Siga os passos abaixo no terminal:
 
 1. Clone o repositório e navegue até a pasta do projeto:
