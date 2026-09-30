@@ -5,3 +5,7 @@ scraper_cron.log
 venv/
 .venv/
 __pycache__/
+.vercel
+.env*
+*.key
+*.crt
