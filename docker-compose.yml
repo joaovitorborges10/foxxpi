@@ -1,0 +1,18 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: foxxpi_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "foxxpiroot"
+      MYSQL_DATABASE: "foxxpi_database"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "foxxpiadmin"
+    command: --event-scheduler=ON
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

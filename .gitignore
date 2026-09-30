@@ -1,4 +1,3 @@
-run_scraper.sh
 *.log
 backend.log
 scraper_cron.log
