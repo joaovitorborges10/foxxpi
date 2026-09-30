@@ -24,16 +24,16 @@ O **FoxxPI** é um projeto de automação desenvolvido para capturar e centraliz
 ```text
 foxxpi/
 ├── backend/
-│   ├── database.py                 # Conexão com a base de dados
-│   ├── main.py                     # API REST para servir os dados ao frontend
-│   └── scraper.py                  # Script de raspagem e persistência de dados
+│   ├── database.py                 # Conexão e gerenciamento do pool do MySQL
+│   ├── main.py                     # API REST (Flask) para servir os endpoints de notícias
+│   └── scraper.py                  # Engine de raspagem, parsing e persistência de dados
 ├── frontend/
-│   ├── index.html                  # Interface do utilizador
-│   ├── app.js                      # Consumo da API e atualização em tempo real
-│   └── style.css                   # Estilização do painel de notícias
-├── database_autodelete_cron.sql    # Agendador do MySQL para purga automática de dados antigos
-├── foxxpi_database_schema.sql      # Estrutura e tabelas do MySQL
-├── run_scraper.sh                  # Script de automação e gestão de processos
-├── requirements.txt                # Dependências do ecossistema Python
-├── logo.png                        # Identidade visual / Social Preview
+│   ├── index.html                  # Interface web (Single Page Application)
+│   ├── app.js                      # Consumo da API, comutação de ambiente e auto-refresh
+│   └── style.css                   # Estilização responsiva do painel de notícias
+├── database_autodelete_cron.sql    # Event Scheduler do MySQL para purga automática
+├── foxxpi_database_schema.sql      # Schema de tabelas e índices da base de dados
+├── run_scraper.sh                  # Orquestrador de processos (Backend, Funnel, Frontend e Scraper)
+├── requirements.txt                # Dependências Python do projeto
+├── logo.png                        # Identidade visual e marca do FoxxPI
 └── README.md                       # Documentação do repositório
