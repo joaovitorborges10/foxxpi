@@ -20,6 +20,8 @@ Para colocar o projeto em funcionamento em um ambiente **Linux**, certifique-se 
 
 ---
 
+## 🔧 Configuração
+
 Siga os passos abaixo no terminal:
 
 1. Clone o repositório e navegue até a pasta do projeto:
@@ -27,11 +29,11 @@ Siga os passos abaixo no terminal:
    git clone <url-do-repositorio>
    cd foxxpi
    ```
-2. Dê permissão de execução ao script orquestrador (caso necessário):
+2. Dê permissão de execução ao script de arranque (caso necessário):
    ```bash
    chmod +x run_scraper.sh
    ```
-3. Execute o script orquestrador para iniciar os serviços (Docker, Banco de Dados, Backend, Funnel, Frontend e Scraper) e acompanhe os logs gerados:
+3. Execute o script de arranque para iniciar os serviços (Docker, Banco de Dados, Backend, Funnel, Frontend e Scraper) e acompanhe os logs gerados:
    ```bash
    ./run_scraper.sh
    ```
@@ -39,7 +41,7 @@ Siga os passos abaixo no terminal:
 
 ## 🗑️  Encerramento de Processos e Reset Completo do Ambiente
 
-6. Caso Seja Necessário o Encerramento dos Processos utilize o script (stop_services.sh)
+6. Caso Seja Necessário o Encerramento dos processos utilize o script (stop_services.sh)
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
