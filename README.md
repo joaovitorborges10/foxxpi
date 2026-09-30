@@ -19,6 +19,7 @@
 Para colocar o projeto em funcionamento em um ambiente **Linux**, certifique-se de que possui as ferramentas pré-requisitas instaladas:
 - **Docker** e **Docker Compose**
 - **Python 3 / Pip**
+- **libnotify-bin / Py3 OS Level Plugin**
 - **Tailscale** configurado
 - *(Opcional)* Vercel CLI via `npm` (ferramenta usada opcionalmente apenas para fins de deploy/serverless, sem ligação direta com a execução local do projeto).
 
