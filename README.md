@@ -10,8 +10,6 @@
 - **Frontend:** HTML5, CSS3, JavaScript (Fetch API + Polling)
 - **Automação:** Shell Scripting (`bash`) e `cron` no Linux
 
----
-
 ## 🚀 Como Executar
 
 Para colocar o projeto em funcionamento em um ambiente **Linux**, certifique-se de que possui as ferramentas pré-requisitas instaladas:
