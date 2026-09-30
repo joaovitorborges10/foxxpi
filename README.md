@@ -2,15 +2,7 @@
 
 > Um agente simples de raspagem de dados (*web scraping*) escrito em Python para monitorar notícias e avisos do *campus* da UniEVANGÉLICA.
 
----
-
-## 📋 Sobre o Projeto
----
-O **FoxxPI** é um projeto de automação desenvolvido para capturar e centralizar notícias, eventos e comunicados do ecossistema da UniEVANGÉLICA. O sistema opera em segundo plano, filtrando informações relevantes e disponibilizando-as numa interface web simples com atualização em tempo real.
-
 ## 🛠️ Arquitetura e Tecnologias
-
----
 
 - **Linguagem:** Python 3
 - **Base de Dados:** MySQL (`foxxpi_database`)
