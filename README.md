@@ -50,6 +50,7 @@ Siga os passos abaixo no terminal:
    chmod +x stop_services.sh
    ./reset_all.sh
    ```
+> Tambem podendo ser utilizado para regenerar o ambiente de eventuais incoerências e recriar o ecossistema como um todo a partir dos passos especificados nas guias anteriores desse README.md
 
 ## ⚙️  Estrutura do Projeto
 
