@@ -23,6 +23,8 @@ O **FoxxPI** é um projeto de automação desenvolvido para capturar e centraliz
 
 ```text
 foxxpi/
+├── api/
+│   └── index.py                    # Serverless Function / Entrypoint de redirecionamento para a Vercel
 ├── backend/
 │   ├── database.py                 # Conexão e gerenciamento do pool do MySQL
 │   ├── main.py                     # API REST (Flask) para servir os endpoints de notícias
@@ -35,5 +37,6 @@ foxxpi/
 ├── foxxpi_database_schema.sql      # Schema de tabelas e índices da base de dados
 ├── run_scraper.sh                  # Orquestrador de processos (Backend, Funnel, Frontend e Scraper)
 ├── requirements.txt                # Dependências Python do projeto
+├── vercel.json                     # Configuração de rotas e build serverless da Vercel
 ├── logo.png                        # Identidade visual e marca do FoxxPI
 └── README.md                       # Documentação do repositório
