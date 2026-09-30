@@ -110,17 +110,25 @@ def monitorar_homepage():
             if not link_tag or not link_tag.get('href'):
                 continue
 
-            # Extração da data via tag <span>
-            span_data = item.find('span')
-            data_noticia = parse_data(span_data.text) if span_data else None
+            # Procura por um padrão de data (ex: 14/09/2026) no texto de qualquer span ou div do item
+            data_noticia = None
+            for span in item.find_all(['span', 'time', 'p', 'div']):
+                texto_span = span.get_text(strip=True)
+                # Regex para encontrar datas no formato dd/mm/aaaa ou dd/mm/aa
+                match_data = re.search(r'\b(\d{2}/\d{2}/\d{4})\b', texto_span)
+                if match_data:
+                    data_noticia = parse_data(match_data.group(1))
+                    # Se encontrou a data, remove o elemento do HTML para não sujar o título
+                    span.decompose()
+                    break
 
             # Filtro de data: se houver data e for anterior a 01/08/2026, descarta
             if data_noticia and data_noticia < DATA_CORTE:
                 continue
 
             # Destrói a tag de data do elemento HTML para impedir que ela fique colada no título
-            if span_data:
-                span_data.decompose()
+            if span:
+                span.decompose()
 
             # Extração limpa do título utilizando separador de espaço
             titulo_raw = link_tag.get_text(separator=' ', strip=True)
