@@ -39,13 +39,13 @@ Siga os passos abaixo no terminal:
 
 ## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
-1. Caso Seja Necessário o Encerramento dos processos utilize o script (stop_services.sh)
+1. Caso seja necessário o encerramento dos processos utilize o script (stop_services.sh)
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
   ```
 
-2. Para Eliminar todo o Serviço incluindo DESTRUIR o Container SQL utilize o script (reset_all.sh)
+2. Para eliminar todo o serviço incluindo DESTRUIR o Container SQL utilize o script (reset_all.sh)
   ```bash
    chmod +x stop_services.sh
    ./reset_all.sh
