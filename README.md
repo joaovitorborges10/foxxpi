@@ -35,22 +35,19 @@ Siga os passos abaixo no terminal:
    ```
 4. Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
----
-
 ## 🗑️  Encerramento de Processos e Reset Completo do Ambiente
 
 6. Caso Seja Necessário o Encerramento dos Processos utilize o script (stop_services.sh)
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
-    ```
+  ```
 
 7. Para Eliminar todo o Serviço incluindo DESTRUIR o Container SQL utilize o script (reset_all.sh)
   ```bash
    chmod +x stop_services.sh
    ./reset_all.sh
    ```
----
 
 ## ⚙️ Estrutura do Projeto
 
