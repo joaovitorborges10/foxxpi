@@ -1,6 +1,7 @@
-![Python](https://img.shields.icons/badge/Python-3.x-blue.svg)
-![Flask](https://img.shields.icons/badge/Flask-Backend-green.svg)
-
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-Backend-green?logo=flask&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-Database-orange?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containers-blue?logo=docker&logoColor=white)
 # 🦊 FoxxPI
 
 > Um agente simples de raspagem de dados (*web scraping*) escrito em Python para monitorar notícias e avisos do *campus* da UniEVANGÉLICA.
