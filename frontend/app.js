@@ -1,5 +1,21 @@
-// Descobre automaticamente o IP ou hostname da máquina onde a API está a correr
-const API_URL = `http://${window.location.hostname}:5000/api/noticias`;
+// 1. Identifica de onde a aplicação está a ser acedida
+const hostname = window.location.hostname;
+
+let API_BASE;
+
+if (hostname.includes('vercel.app')) {
+  // Endereço HTTPS do Tailscale Funnel para a Vercel
+  API_BASE = "https://foxxpi-host.sua-tailnet.ts.net"; 
+} else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  // Acesso local direto no servidor
+  API_BASE = "http://localhost:5000";                
+} else {
+  // Acesso via IP da Tailnet em outros dispositivos
+  API_BASE = "http://100.83.84.41:5000";             
+}
+
+// 2. Define a rota da API (declarada UMA ÚNICA VEZ)
+const API_URL = `${API_BASE}/api/noticias`;
 
 // Guarda o filtro ativo para manter a escolha do utilizador na atualização automática
 let filtroAtual = 'relevantes=true';
