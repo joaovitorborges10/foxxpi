@@ -99,18 +99,32 @@ def monitorar_homepage():
             if not link_tag or not link_tag.get('href'):
                 continue
 
-            # Extração e validação da data via tag <span>
-            span_data = item.find('span')  # Ajuste a classe se necessário (ex: item.find('span', class_='data'))
+            # Extração da data via tag <span>
+            span_data = item.find('span')
             data_noticia = parse_data(span_data.text) if span_data else None
 
             # Filtro de data: se houver data e for anterior a 01/08/2026, descarta
             if data_noticia and data_noticia < DATA_CORTE:
                 continue
 
-            # Limpeza do título
-            titulo_raw = " ".join(link_tag.get_text(strip=True).split())
-            titulo = re.sub(r'([a-zA-ZáàâãéèêíóôõúçÁÀÂÃÉÈÊÍÓÔÕÚÇ])(\d+º?)', r'\1 \2', titulo_raw)
-            
+            # Destrói a tag de data do elemento HTML para impedir que ela fique colada no título
+            if span_data:
+                span_data.decompose()
+
+            # Extração limpa do título utilizando separador de espaço
+            titulo_raw = link_tag.get_text(separator=' ', strip=True)
+
+            # Insere espaço entre letras minúsculas e maiúsculas coladas (ex: AnápolisUniEVANGÉLICA)
+            titulo_tratado = re.sub(r'([a-zà-ú])([A-ZÀ-Ú])', r'\1 \2', titulo_raw)
+
+            # 2. Correção específica para a marca (Junta 'Uni EVANGÉLICA' ou 'Uni EVANGELICA' novamente)
+            titulo_tratado = re.sub(r'\bUni\s+EVANGÉLICA\b', 'UniEVANGÉLICA', titulo_tratado, flags=re.IGNORECASE)
+            titulo_tratado = re.sub(r'\bUni\s+EVANGELICA\b', 'UniEVANGÉLICA', titulo_tratado, flags=re.IGNORECASE)
+            # Insere espaço entre texto e números/datas coladas
+            # 3. Insere espaço entre texto e números/datas
+            titulo = re.sub(r'([a-zA-ZáàâãéèêíóôõúçÁÀÂÃÉÈÊÍÓÔÕÚÇ])(\d+º?)', r'\1 \2', titulo_tratado)
+            titulo = " ".join(titulo.split())  # Normaliza múltiplos espaços
+
             link_bruto = link_tag['href'].strip()
 
             if not titulo or len(titulo) < 15:
