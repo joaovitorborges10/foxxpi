@@ -1,3 +1,6 @@
+![Python](https://img.shields.icons/badge/Python-3.x-blue.svg)
+![Flask](https://img.shields.icons/badge/Flask-Backend-green.svg)
+
 # 🦊 FoxxPI
 
 > Um agente simples de raspagem de dados (*web scraping*) escrito em Python para monitorar notícias e avisos do *campus* da UniEVANGÉLICA.
@@ -24,7 +27,7 @@ Siga os passos abaixo no terminal:
 
 1. Clone o repositório e navegue até a pasta do projeto:
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/joaovitorborges10/foxxpi.git
    cd foxxpi
    ```
 2. Dê permissão de execução ao script de arranque (caso necessário):
@@ -57,23 +60,23 @@ Siga os passos abaixo no terminal:
  ```text 
 foxxpi/
 ├── api/
-│   └── index.py                    # Serverless Function / Entrypoint de redirecionamento para a Vercel[cite: 3]
+│   └── index.py                    # Serverless Function / Entrypoint de redirecionamento para a Vercel
 ├── backend/
-│   ├── database.py                 # Conexão e gerenciamento do pool do MySQL[cite: 3]
-│   ├── main.py                     # API REST (Flask) para servir os endpoints de notícias[cite: 3]
-│   └── scraper.py                  # Engine de raspagem, parsing e persistência de dados[cite: 3]
+│   ├── database.py                 # Conexão e gerenciamento do pool do MySQL
+│   ├── main.py                     # API REST (Flask) para servir os endpoints de notícias
+│   └── scraper.py                  # Engine de raspagem, parsing e persistência de dados
 ├── frontend/
-│   ├── index.html                  # Interface web (Single Page Application)[cite: 3]
-│   ├── app.js                      # Consumo da API, comutação de ambiente e auto-refresh[cite: 3]
-│   └── style.css                   # Estilização responsiva do painel de notícias[cite: 3]
-├── database_autodelete_cron.sql    # Event Scheduler do MySQL para purga automática de dados[cite: 3]
-├── docker-compose.yml              # Orquestração do container MySQL com o agendador nativo ativo[cite: 3]
-├── foxxpi_database_schema.sql      # Schema de tabelas e índices da base de dados[cite: 3]
-├── run_scraper.sh                  # Orquestrador de processos (Docker, DB, Backend, Funnel, Frontend e Scraper)[cite: 3]
+│   ├── index.html                  # Interface web (Single Page Application)
+│   ├── app.js                      # Consumo da API, comutação de ambiente e auto-refresh
+│   └── style.css                   # Estilização responsiva do painel de notícias
+├── database_autodelete_cron.sql    # Event Scheduler do MySQL para purga automática de dados
+├── docker-compose.yml              # Orquestração do container MySQL com o agendador nativo ativo
+├── foxxpi_database_schema.sql      # Schema de tabelas e índices da base de dados
+├── run_scraper.sh                  # Orquestrador de processos (Docker, DB, Backend, Funnel, Frontend e Scraper)
 ├── stop_services.sh                # Script para paragem segura dos serviços nas portas 5000 e 8080
 ├── reset_all.sh                    # Script para reset total do ambiente e limpeza do banco de dados
-├── requirements.txt                # Dependências Python do projeto[cite: 3]
-├── vercel.json                     # Configuração de rotas e build serverless da Vercel[cite: 3]
-├── logo.png                        # Identidade visual e marca do FoxxPI[cite: 3]
-└── README.md                       # Documentação do repositório[cite: 3]
+├── requirements.txt                # Dependências Python do projeto
+├── vercel.json                     # Configuração de rotas e build serverless da Vercel
+├── logo.png                        # Identidade visual e marca do FoxxPI
+└── README.md                       # Documentação do repositório
  ``` 
