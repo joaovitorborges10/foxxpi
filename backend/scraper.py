@@ -12,13 +12,13 @@ URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
 # Data limite para filtro: 01 de Agosto de 2026
 DATA_CORTE = datetime(2026, 8, 1)
 
-# Listas de palavras-chave para filtro
+# Listas de palavras-chave para filtro (com termos compostos seguros)
 KEYWORDS_TECH = [
     'tecnologia', 'programação', 'desenvolvimento', 'software', 'ti', 
     'inteligência artificial', 'ia', 'python', 'javascript', 'algoritmo',
     'computação', 'hackathon', 'maratona', 'dados', 'cybersecurity', 'sistema',
     'engenharia de software', 'sistemas de informação', 'ciência da computação',
-    'análise e desenvolvimento', 'inovação', 'ciência'
+    'análise e desenvolvimento', 'inovação', 'ciência', 'transformação digital'
 ]
 
 KEYWORDS_EVENTOS = [
@@ -34,11 +34,15 @@ KEYWORDS_IGNORAR = [
 ]
 
 def contem_palavra_chave(texto, keywords):
-    """Verifica se alguma palavra-chave está presente no texto tratando limites de palavras."""
+    """Verifica se alguma palavra-chave ou termo composto está presente no texto."""
     for kw in keywords:
-        pattern = rf'\b{re.escape(kw)}\b'
-        if re.search(pattern, texto, re.IGNORECASE):
-            return True
+        if ' ' in kw:
+            if kw in texto:
+                return True
+        else:
+            pattern = rf'\b{re.escape(kw)}\b'
+            if re.search(pattern, texto, re.IGNORECASE):
+                return True
     return False
 
 def classificar_noticia(titulo):
@@ -95,14 +99,13 @@ def monitorar_homepage():
         conn = obter_conexao()
         cursor = conn.cursor()
 
-        # Verifica se a base de dados está vazia (primeira execução / pós-reset)
         cursor.execute("SELECT COUNT(*) FROM noticias")
         total_registos_bd = cursor.fetchone()[0]
         primeira_execucao = (total_registos_bd == 0)
 
         noticias_processadas = 0
         links_processados = set()
-        primeira_noticia_titulo = None
+        primeira_noticia_relevante_titulo = None
 
         # 3. Filtragem, limite de 20 e gravação
         for item in artigos:
@@ -130,22 +133,29 @@ def monitorar_homepage():
                 span_encontrado.decompose()
 
             titulo_raw = link_tag.get_text(separator=' ', strip=True)
+
             titulo_tratado = re.sub(r'([a-zà-ú])([A-ZÀ-Ú])', r'\1 \2', titulo_raw)
             titulo_tratado = re.sub(r'\bUni\s+EVANGÉLICA\b', 'UniEVANGÉLICA', titulo_tratado, flags=re.IGNORECASE)
             titulo_tratado = re.sub(r'\bUni\s+EVANGELICA\b', 'UniEVANGÉLICA', titulo_tratado, flags=re.IGNORECASE)
             titulo = re.sub(r'([a-zA-ZáàâãéèêíóôõúçÁÀÂÃÉÈÊÍÓÔÕÚÇ])(\d+º?)', r'\1 \2', titulo_tratado)
             titulo = " ".join(titulo.split())
 
-            link_bruto = link_tag['href'].strip()
+            titulo = re.sub(r'^(Todos os Campi|Campus [A-Za-zÀ-Ú\s]+)\s*-\s*', '', titulo, flags=re.IGNORECASE)
+            titulo = re.sub(r'^(Todos os Campi|Campus [A-Za-zÀ-Ú\s]+)\s+', '', titulo, flags=re.IGNORECASE)
 
-            if not titulo or len(titulo) < 15:
+            if not titulo or len(titulo) < 15 or re.fullmatch(r'Campus\s+[A-Za-zÀ-Ú\s]+|Todos os Campi', titulo, flags=re.IGNORECASE):
                 continue
+
+            link_bruto = link_tag['href'].strip()
+            link = urljoin(URL_NOTICIAS, link_bruto)
+
+            # 🔥 Correção pontual para o título do AWS Tech Day que vem cortado do card HTML
+            if "tecnologia-em-transformacao-aws-tech-day" in link.lower():
+                titulo = "Tecnologia em transformação: AWS Tech Day Anápolis discute IA, nuvem e escalabilidade"
 
             titulo_lc = titulo.lower()
             if any(termo in titulo_lc for termo in KEYWORDS_IGNORAR):
                 continue
-
-            link = urljoin(URL_NOTICIAS, link_bruto)
 
             if link in links_processados:
                 continue
@@ -165,21 +175,18 @@ def monitorar_homepage():
             """
             cursor.execute(sql, (titulo, link, categoria, eh_relevante, data_sql))
             
-            # Se for a primeira execução, guarda apenas o título da primeira (mais recente) notícia processada
-            if primeira_execucao and noticias_processadas == 0:
-                primeira_noticia_titulo = titulo
+            if primeira_execucao and eh_relevante and not primeira_noticia_relevante_titulo:
+                primeira_noticia_relevante_titulo = titulo
             
-            # Nas execuções normais (com a BD já cheia), notifica individualmente se for um insert novo
-            if not primeira_execucao and cursor.rowcount == 1:
+            if not primeira_execucao and cursor.rowcount == 1 and eh_relevante:
                 enviar_notificacao_desktop(titulo)
 
             noticias_processadas += 1
 
         conn.commit()
 
-        # Se for a primeira execução e encontrou pelo menos uma notícia, dispara apenas o alerta da última/recente
-        if primeira_execucao and primeira_noticia_titulo:
-            enviar_notificacao_desktop(f"[Inicialização] {primeira_noticia_titulo}")
+        if primeira_execucao and primeira_noticia_relevante_titulo:
+            enviar_notificacao_desktop(f"[Inicialização] {primeira_noticia_relevante_titulo}")
 
         print(f"[FoxxPI Scraper] Processamento concluído. Itens verificados/atualizados: {noticias_processadas}")
 
