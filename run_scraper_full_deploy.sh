@@ -65,7 +65,16 @@ else
     echo "[Cron] Backend já se encontra ativo." | tee -a "$LOG_FILE"
 fi
 
-# 5. Inicia o Servidor Web Frontend em segundo plano se não estiver ativo
+# 5. Inicia o Tailscale Funnel para a Vercel/HTTPS se não estiver ativo
+if ! sudo tailscale funnel status 2>&1 | grep -q "5000"; then
+    echo "[Cron] Subindo Tailscale Funnel na porta $PORTA_BACKEND..." | tee -a "$LOG_FILE"
+    sudo tailscale funnel --bg $PORTA_BACKEND >> "$LOG_FILE" 2>&1
+    echo "[Cron] Tailscale Funnel ativado na porta $PORTA_BACKEND." | tee -a "$LOG_FILE"
+else
+    echo "[Cron] Tailscale Funnel já está ativo." | tee -a "$LOG_FILE"
+fi
+
+# 6. Inicia o Servidor Web Frontend em segundo plano se não estiver ativo
 if ! pgrep -f "http.server $PORTA_WEB" > /dev/null; then
     echo "[Cron] Subindo servidor web estático na porta $PORTA_WEB..." | tee -a "$LOG_FILE"
     nohup python3 -m http.server $PORTA_WEB --bind 0.0.0.0 --directory "$PROJECT_DIR/frontend" >> "$PROJECT_DIR/frontend.log" 2>&1 &
@@ -75,7 +84,7 @@ else
     echo "[Cron] Servidor web do frontend já está ativo." | tee -a "$LOG_FILE"
 fi
 
-# 6. Executa o Scraper
+# 7. Executa o Scraper
 echo "[Cron] Executando scraper.py..." | tee -a "$LOG_FILE"
 python3 backend/scraper.py >> "$LOG_FILE" 2>&1
 echo "[Cron] Scraper executado e registado com sucesso." | tee -a "$LOG_FILE"
