@@ -36,6 +36,7 @@ Siga os passos abaixo no terminal:
    ```bash
    # Linux
    chmod +x run_scraper.sh
+   chmod + x run_scraper_full_deploy.sh
 
    # WSL
    chmod +x run_scraper_wsl.sh
@@ -47,6 +48,11 @@ Siga os passos abaixo no terminal:
 
    # WSL
    ./run_scraper_wsl.sh
+   ```
+   4. Para Execução do Ambiente Completo Incluindo Deploy Local via **_Vercel_** e **_Tailscale Funnel_**
+   ```bash
+   # Linux
+   ./run_scraper_full_deploy.sh
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
