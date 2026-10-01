@@ -49,7 +49,7 @@ Siga os passos abaixo no terminal:
    # WSL
    ./run_scraper_wsl.sh
    ```
-   4. Para Execução do Ambiente Completo Incluindo Deploy Local via **_Vercel_** e **_Tailscale Funnel_**
+4. Para Execução do Ambiente Completo Incluindo Deploy Local via **_Vercel_** e **_Tailscale Funnel_**
    ```bash
    # Linux
    ./run_scraper_full_deploy.sh
