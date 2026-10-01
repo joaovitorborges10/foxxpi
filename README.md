@@ -34,11 +34,19 @@ Siga os passos abaixo no terminal:
    ```
 2. Dê permissão de execução ao script de arranque (caso necessário):
    ```bash
+   # Linux
    chmod +x run_scraper.sh
+
+   # WSL
+   chmod +x run_scraper_wsl.sh
    ```
 3. Execute o script de arranque para iniciar os serviços (Docker, Banco de Dados, Backend, Funnel, Frontend e Scraper) e acompanhe os logs gerados:
    ```bash
+   # Linux
    ./run_scraper.sh
+
+   # WSL
+   ./run_scraper_wsl.sh
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
