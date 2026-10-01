@@ -30,4 +30,4 @@ echo "=== [4/4] Limpando arquivos de log locais ==="
 rm -f scraper_cron.log backend.log frontend.log
 
 echo "=== Reset completo executado! O ambiente está 100% limpo. ==="
-echo "Dica: Para reiniciar tudo do zero, basta rodar: ./run_scraper_minimal.sh"
+echo "Dica: Para reiniciar tudo do zero, basta rodar: ./run_scraper.sh"
