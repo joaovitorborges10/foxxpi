@@ -73,12 +73,11 @@ else
 fi
 
 if ! pgrep -f "backend/scraper.py" > /dev/null; then
-    echo "[Deploy] Subindo scraper.py em loop contínuo..." | tee -a "$LOG_FILE"
-    nohup python3 backend/scraper.py >> "$LOG_FILE" 2>&1 &
-    SCRAPER_PID=$!
-    echo "[Deploy] Scraper iniciado em background com PID: $SCRAPER_PID." | tee -a "$LOG_FILE"
+    echo "[Init] Subindo scraper.py em loop contínuo..." | tee -a "$LOG_FILE"
+    echo "[Init] Scraper iniciado e rodando em foreground." | tee -a "$LOG_FILE"
+    python3 backend/scraper.py >> "$LOG_FILE" 2>&1
 else
-    echo "[Deploy] Scraper já se encontra ativo." | tee -a "$LOG_FILE"
+    echo "[Init] Scraper já se encontra ativo." | tee -a "$LOG_FILE"
 fi
 
 echo "=== Full Deploy concluído em $(date) ===" | tee -a "$LOG_FILE"
