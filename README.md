@@ -52,13 +52,13 @@ Siga os passos abaixo no terminal:
 
 ## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
-1. Caso seja necessário o encerramento dos processos utilize o script **stop_services.sh**
+1. Caso seja necessário o encerramento dos processos utilize o script **_stop_services.sh_**
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
   ```
 
-2. Para **ELIMINAR** todo o serviço incluindo **DESTRUIR** o Banco de Dados utilize o script **reset_all.sh**
+2. Para **ELIMINAR** todo o serviço incluindo **DESTRUIR** o Banco de Dados utilize o script **_reset_all.sh_**
   ```bash
    chmod +x reset_all.sh
    ./reset_all.sh
