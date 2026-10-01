@@ -4,7 +4,28 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 from database import obter_conexao
+import os
 import subprocess
+
+# Garante que o diretório local do notify-send esteja no PATH do Python
+local_bin = os.path.expanduser("~/.local/bin")
+if local_bin not in os.environ["PATH"]:
+    os.environ["PATH"] = f"{local_bin}:{os.environ['PATH']}"
+
+def enviar_notificacao(titulo, mensagem):
+    try:
+        # Remove temporariamente o redirectionamento de erro para podermos ver se o PowerShell engasga
+        resultado = subprocess.run(
+            ["notify-send", titulo, mensagem],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        print(f"[Notificação] Sucesso: {resultado.stdout}")
+    except subprocess.CalledProcessError as e:
+        print(f"[Notificação] Erro ao executar: {e.stderr}")
+    except Exception as e:
+        print(f"[Notificação] Erro inesperado: {e}")
 
 # URL de destino
 URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
@@ -72,11 +93,19 @@ def parse_data(data_str):
         return None
 
 def enviar_notificacao_desktop(titulo):
-    """Dispara a notificação nativa no Linux via libnotify."""
+    """Dispara a notificação personalizada para o Windows via notify-send."""
     try:
-        subprocess.run(["notify-send", "🦊 FoxxPI - Nova Notícia", titulo], check=True)
+        resultado = subprocess.run(
+            ["notify-send", "🦊 FoxxPI - Nova Notícia", titulo],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        print(f"[Notificação] Sucesso: {resultado.stdout.strip()}")
+    except subprocess.CalledProcessError as e:
+        print(f"[FoxxPI] Erro ao executar notify-send: {e.stderr.strip()}")
     except Exception as e:
-        print(f"[FoxxPI] Erro ao enviar notificação: {e}")
+        print(f"[FoxxPI] Erro inesperado ao enviar notificação: {e}")
 
 def monitorar_homepage():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}

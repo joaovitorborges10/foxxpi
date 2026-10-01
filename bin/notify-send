@@ -1,0 +1,24 @@
+#!/bin/bash
+title="$1"
+message="$2"
+
+# Se o powershell.exe existir (ambiente WSL), usa a notificação do Windows
+if command -v powershell.exe &> /dev/null; then
+    powershell.exe -NoProfile -WindowStyle Hidden -Command "
+        Add-Type -AssemblyName System.Windows.Forms;
+        \$notifier = New-Object System.Windows.Forms.NotifyIcon;
+        \$notifier.Icon = [System.Drawing.SystemIcons]::Information;
+        \$notifier.BalloonTipIcon = [System.Drawing.ToolTipIcon]::Info;
+        \$notifier.BalloonTipTitle = '$title';
+        \$notifier.BalloonTipText = '$message';
+        \$notifier.Visible = \$true;
+        \$notifier.ShowBalloonTip(5000);
+        Start-Sleep -Seconds 2;
+        \$notifier.Dispose();
+    " > /dev/null 2>&1 &
+else
+    # Caso contrário, usa o notify-send nativo do Linux
+    if [ -x /usr/bin/notify-send ]; then
+        /usr/bin/notify-send "$title" "$message"
+    fi
+fi
