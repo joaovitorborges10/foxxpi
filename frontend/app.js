@@ -1,5 +1,4 @@
 const hostname = window.location.hostname;
-
 let API_BASE;
 
 if (hostname.includes('vercel.app')) {
@@ -11,20 +10,15 @@ if (hostname.includes('vercel.app')) {
 }
 
 const API_URL = `${API_BASE}/api/noticias`;
-
-// Guarda o filtro ativo para manter a escolha do utilizador na atualização automática
 let filtroAtual = 'relevantes=true';
 
-// Função auxiliar para formatar datas sem gerar Invalid Date
 function formatarDataSegura(dataValor) {
     if (!dataValor || dataValor === 'null') return 'Data não informada';
 
-    // Se já vier no formato DD/MM/AAAA (ex: "15/08/2026")
     if (typeof dataValor === 'string' && dataValor.includes('/')) {
         return dataValor;
     }
 
-    // Trata formato ISO / MySQL (ex: "2026-08-15" ou "2026-08-15T14:30:00")
     if (typeof dataValor === 'string' && dataValor.includes('-')) {
         const apenasData = dataValor.split('T')[0];
         const partes = apenasData.split('-');
@@ -34,7 +28,6 @@ function formatarDataSegura(dataValor) {
         }
     }
 
-    // Tenta conversão genérica se for objeto Date ou timestamp válido
     const dataObj = new Date(dataValor);
     if (!isNaN(dataObj.getTime())) {
         return dataObj.toLocaleDateString('pt-BR');
@@ -46,7 +39,6 @@ function formatarDataSegura(dataValor) {
 async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
     const container = document.getElementById('news-container');
     
-    // Só mostra o texto de carregamento na primeira busca ou ao clicar num botão
     if (!silencioso) {
         container.innerHTML = '<p class="loading">Buscando notícias no FoxxPI...</p>';
     }
@@ -66,12 +58,10 @@ async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
             const card = document.createElement('div');
             card.className = 'card';
 
-            // Escolhe a classe da tag visual
             let badgeClass = 'badge-geral';
             if (item.categoria === 'Tecnologia') badgeClass = 'badge-tech';
             if (item.categoria && item.categoria.includes('Evento')) badgeClass = 'badge-evento';
 
-            // Prioriza a data de publicação da notícia; recua para a data de registro se vazia
             const dataExibicao = formatarDataSegura(item.data_publicacao || item.criado_em);
 
             card.innerHTML = `
@@ -94,23 +84,14 @@ async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
 }
 
 function filtrar(queryParams, botao) {
-    // Guarda o novo filtro ativo
     filtroAtual = queryParams;
-
-    // Atualiza o estado visual dos botões
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
     botao.classList.add('active');
-
-    // Executa a busca visível (com indicação de carregamento)
     carregarNoticias(queryParams, false);
 }
 
-// Inicializa o script quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Busca inicial
     carregarNoticias(filtroAtual, false);
-
-    // 2. Atualização automática em segundo plano a cada 30 segundos (30000 ms)
     setInterval(() => {
         carregarNoticias(filtroAtual, true);
     }, 30000);

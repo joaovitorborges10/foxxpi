@@ -7,14 +7,12 @@ from database import obter_conexao
 import os
 import subprocess
 
-# Garante que o diretório local do notify-send esteja no PATH do Python
 local_bin = os.path.expanduser("~/.local/bin")
 if local_bin not in os.environ["PATH"]:
     os.environ["PATH"] = f"{local_bin}:{os.environ['PATH']}"
 
 def enviar_notificacao(titulo, mensagem):
     try:
-        # Remove temporariamente o redirectionamento de erro para podermos ver se o PowerShell engasga
         resultado = subprocess.run(
             ["notify-send", titulo, mensagem],
             check=True,
@@ -27,13 +25,9 @@ def enviar_notificacao(titulo, mensagem):
     except Exception as e:
         print(f"[Notificação] Erro inesperado: {e}")
 
-# URL de destino
 URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
-
-# Data limite para filtro: 01 de Agosto de 2026
 DATA_CORTE = datetime(2026, 8, 1)
 
-# Listas de palavras-chave para filtro (com termos compostos seguros)
 KEYWORDS_TECH = [
     'tecnologia', 'programação', 'desenvolvimento', 'software', 'ti', 
     'inteligência artificial', 'ia', 'python', 'javascript', 'algoritmo',
@@ -55,7 +49,6 @@ KEYWORDS_IGNORAR = [
 ]
 
 def contem_palavra_chave(texto, keywords):
-    """Verifica se alguma palavra-chave ou termo composto está presente no texto."""
     for kw in keywords:
         if ' ' in kw:
             if kw in texto:
@@ -67,9 +60,7 @@ def contem_palavra_chave(texto, keywords):
     return False
 
 def classificar_noticia(titulo):
-    """Analisa o título e classifica por relevância e categoria."""
     titulo_lc = titulo.lower()
-    
     eh_tech = contem_palavra_chave(titulo_lc, KEYWORDS_TECH)
     eh_evento = contem_palavra_chave(titulo_lc, KEYWORDS_EVENTOS)
     
@@ -83,7 +74,6 @@ def classificar_noticia(titulo):
     return 'Geral', False
 
 def parse_data(data_str):
-    """Converte 'dd/mm/aa' ou 'dd/mm/yyyy' para objeto datetime."""
     try:
         data_str = data_str.strip()
         if len(data_str.split('/')[-1]) == 2:
@@ -93,10 +83,9 @@ def parse_data(data_str):
         return None
 
 def enviar_notificacao_desktop(titulo):
-    """Dispara a notificação personalizada para o Windows via notify-send."""
     try:
         resultado = subprocess.run(
-            ["notify-send", "🦊 FoxxPI - Nova Notícia", titulo],
+            ["notify-send", "FoxxPI - Nova Notícia", titulo],
             check=True,
             capture_output=True,
             text=True
@@ -109,7 +98,6 @@ def enviar_notificacao_desktop(titulo):
 
 def monitorar_homepage():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-    
     conn = None
     cursor = None
 
@@ -118,11 +106,9 @@ def monitorar_homepage():
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # 1. Limpeza de elementos de navegação/ruído
         for lixo in soup.select('nav, footer, header, aside, .menu, .sidebar, .footer, .btn, .botao, .atendimento'):
             lixo.decompose()
 
-        # 2. Seleção de artigos/cards
         artigos = soup.select('article, div.noticia, .post-item, .card, a[href*="noticia"]')
 
         conn = obter_conexao()
@@ -136,7 +122,6 @@ def monitorar_homepage():
         links_processados = set()
         primeira_noticia_relevante_titulo = None
 
-        # 3. Filtragem, limite de 20 e gravação
         for item in artigos:
             if noticias_processadas >= 20:
                 break
@@ -146,22 +131,35 @@ def monitorar_homepage():
                 continue
 
             data_noticia = None
-            span_encontrado = None
-            for span in item.find_all(['span', 'time', 'p', 'div']):
-                texto_span = span.get_text(strip=True)
-                match_data = re.search(r'\b(\d{2}/\d{2}/\d{4})\b', texto_span)
+            
+            tag_tempo = item.find('time') or item.find(class_=re.compile('data|date|time', re.IGNORECASE))
+            if tag_tempo:
+                match_data = re.search(r'\b(\d{2}/\d{2}/\d{4})\b', tag_tempo.get_text(strip=True))
                 if match_data:
                     data_noticia = parse_data(match_data.group(1))
-                    span_encontrado = span
-                    break
 
-            if data_noticia and data_noticia < DATA_CORTE:
-                continue
-
-            if span_encontrado:
-                span_encontrado.decompose()
+            if not data_noticia:
+                for sub_elem in item.find_all(['span', 'div', 'p', 'li', 'td']):
+                    texto_elem = sub_elem.get_text(strip=True)
+                    match_data = re.search(r'\b(\d{2}/\d{2}/\d{4})\b', texto_elem)
+                    if match_data:
+                        data_parseada = parse_data(match_data.group(1))
+                        if data_parseada and data_parseada <= datetime.now():
+                            data_noticia = data_parseada
+                            break
 
             titulo_raw = link_tag.get_text(separator=' ', strip=True)
+            if not data_noticia:
+                match_data_titulo = re.search(r'\b(\d{2}/\d{2}/\d{4})\b', titulo_raw)
+                if match_data_titulo:
+                    data_noticia = parse_data(match_data_titulo.group(1))
+                    titulo_raw = titulo_raw.replace(match_data_titulo.group(1), '').strip()
+
+            if not data_noticia:
+                data_noticia = datetime.now()
+
+            if data_noticia < DATA_CORTE:
+                continue
 
             titulo_tratado = re.sub(r'([a-zà-ú])([A-ZÀ-Ú])', r'\1 \2', titulo_raw)
             titulo_tratado = re.sub(r'\bUni\s+EVANGÉLICA\b', 'UniEVANGÉLICA', titulo_tratado, flags=re.IGNORECASE)
@@ -178,7 +176,6 @@ def monitorar_homepage():
             link_bruto = link_tag['href'].strip()
             link = urljoin(URL_NOTICIAS, link_bruto)
 
-            # 🔥 Correção pontual para o título do AWS Tech Day que vem cortado do card HTML
             if "tecnologia-em-transformacao-aws-tech-day" in link.lower():
                 titulo = "Tecnologia em transformação: AWS Tech Day Anápolis discute IA, nuvem e escalabilidade"
 
@@ -191,7 +188,7 @@ def monitorar_homepage():
             links_processados.add(link)
 
             categoria, eh_relevante = classificar_noticia(titulo)
-            data_sql = data_noticia.strftime("%Y-%m-%d") if data_noticia else None
+            data_sql = data_noticia.strftime("%Y-%m-%d")
 
             sql = """
                 INSERT INTO noticias (titulo, link, categoria, eh_relevante, data_publicacao) 
@@ -200,7 +197,7 @@ def monitorar_homepage():
                     titulo = VALUES(titulo),
                     categoria = VALUES(categoria),
                     eh_relevante = VALUES(eh_relevante),
-                    data_publicacao = COALESCE(VALUES(data_publicacao), data_publicacao)
+                    data_publicacao = VALUES(data_publicacao)
             """
             cursor.execute(sql, (titulo, link, categoria, eh_relevante, data_sql))
             

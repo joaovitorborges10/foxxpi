@@ -72,19 +72,16 @@ header p { color: #94a3b8; font-size: 0.95rem; }
     margin-top: 8px;
 }
 
-/* Cor base do link em laranja */
 a {
-  color: #ff6600; /* Laranja padrão */
-  text-decoration: none; /* Remove o sublinhado, se desejar */
+  color: #ff6600;
+  text-decoration: none;
 }
 
-/* Cor ao passar o mouse por cima (tom ligeiramente mais escuro) */
 a:hover {
   color: #e65c00;
   text-decoration: underline;
 }
 
-/* Mantém o laranja mesmo após o link ser visitado */
 a:visited {
   color: #ff6600;
 }

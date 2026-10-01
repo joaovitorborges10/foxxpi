@@ -14,9 +14,10 @@ done
 pkill -f "backend/main.py"
 pkill -f "http.server"
 
-echo "=== [2/4] Destruindo volumes e containers do MySQL (Reset do Banco) ==="
-# Derruba os containers e apaga o volume de dados do Docker (-v)
-docker compose down -v --remove-orphans
+echo "=== [2/4] Destruindo de forma isolada o container e o volume do MySQL do FoxxPI ==="
+docker stop foxxpi_mysql_db 2>/dev/null
+docker rm -f foxxpi_mysql_db 2>/dev/null
+docker volume rm foxxpi_foxxpi_mysql_data 2>/dev/null
 
 echo "=== [3/4] Removendo notify-send personalizado local ==="
 if [ -f "$HOME/.local/bin/notify-send" ]; then
