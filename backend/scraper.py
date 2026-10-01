@@ -7,23 +7,38 @@ from database import obter_conexao
 import os
 import subprocess
 
-local_bin = os.path.expanduser("~/.local/bin")
-if local_bin not in os.environ["PATH"]:
-    os.environ["PATH"] = f"{local_bin}:{os.environ['PATH']}"
-
-def enviar_notificacao(titulo, mensagem):
+ddef enviar_notificacao(titulo, mensagem):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{timestamp}] [Notificação] Tentando enviar: '{titulo}' -> '{mensagem}'")
+    
     try:
+        wrapper_local = os.path.expanduser("~/.local/bin/notify-send")
+        
+        if os.path.exists(wrapper_local) and os.access(wrapper_local, os.X_OK):
+            cmd = wrapper_local
+        elif os.path.exists("/usr/bin/notify-send"):
+            cmd = "/usr/bin/notify-send"
+        else:
+            cmd = "notify-send"
+
+        # Garante o ambiente do D-Bus e Display para o subprocesso
+        env = os.environ.copy()
+        env["DISPLAY"] = ":0"
+        env["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
+        env["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path={env['XDG_RUNTIME_DIR']}/bus"
+
         resultado = subprocess.run(
-            ["notify-send", titulo, mensagem],
+            [cmd, titulo, mensagem],
             check=True,
             capture_output=True,
-            text=True
+            text=True,
+            env=env
         )
-        print(f"[Notificação] Sucesso: {resultado.stdout}")
+        print(f"[{timestamp}] [Notificação] Sucesso via {cmd}: {resultado.stdout.strip()}")
     except subprocess.CalledProcessError as e:
-        print(f"[Notificação] Erro ao executar: {e.stderr}")
+        print(f"[{timestamp}] [Notificação] ERRO (CalledProcessError): {e.stderr.strip()}")
     except Exception as e:
-        print(f"[Notificação] Erro inesperado: {e}")
+        print(f"[{timestamp}] [Notificação] ERRO Inesperado: {e}")
 
 URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
 DATA_CORTE = datetime(2026, 8, 1)
@@ -82,20 +97,6 @@ def parse_data(data_str):
     except (ValueError, AttributeError):
         return None
 
-def enviar_notificacao_desktop(titulo):
-    try:
-        resultado = subprocess.run(
-            ["notify-send", "FoxxPI - Nova Notícia", titulo],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-        print(f"[Notificação] Sucesso: {resultado.stdout.strip()}")
-    except subprocess.CalledProcessError as e:
-        print(f"[FoxxPI] Erro ao executar notify-send: {e.stderr.strip()}")
-    except Exception as e:
-        print(f"[FoxxPI] Erro inesperado ao enviar notificação: {e}")
-
 def monitorar_homepage():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     conn = None
@@ -120,7 +121,7 @@ def monitorar_homepage():
 
         noticias_processadas = 0
         links_processados = set()
-        primeira_noticia_relevante_titulo = None
+        candidatas_primeiro_boot = []
 
         for item in artigos:
             if noticias_processadas >= 20:
@@ -201,18 +202,19 @@ def monitorar_homepage():
             """
             cursor.execute(sql, (titulo, link, categoria, eh_relevante, data_sql))
             
-            if primeira_execucao and eh_relevante and not primeira_noticia_relevante_titulo:
-                primeira_noticia_relevante_titulo = titulo
+            if primeira_execucao and eh_relevante:
+                candidatas_primeiro_boot.append(titulo)
             
             if not primeira_execucao and cursor.rowcount == 1 and eh_relevante:
-                enviar_notificacao_desktop(titulo)
+                enviar_notificacao("FoxxPI - Nova Notícia", titulo)
 
             noticias_processadas += 1
 
         conn.commit()
 
-        if primeira_execucao and primeira_noticia_relevante_titulo:
-            enviar_notificacao_desktop(f"[Inicialização] {primeira_noticia_relevante_titulo}")
+        if primeira_execucao and candidatas_primeiro_boot:
+            ultima_relevante = candidatas_primeiro_boot[-1]
+            enviar_notificacao("FoxxPI - Inicialização", ultima_relevante)
 
         print(f"[FoxxPI Scraper] Processamento concluído. Itens verificados/atualizados: {noticias_processadas}")
 

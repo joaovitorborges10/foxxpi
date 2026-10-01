@@ -1,9 +1,22 @@
 #!/bin/bash
 
-PROJECT_DIR="$PWD"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$PROJECT_DIR/scraper_cron.log"
 PORTA_WEB=8080
 PORTA_BACKEND=5000
+
+export DISPLAY=:0
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+export XAUTHORITY="/home/$(whoami)/.Xauthority"
+
+SCRIPTPATH="$PROJECT_DIR/$(basename "${BASH_SOURCE[0]}")"
+CRON_REBOOT="@reboot /bin/bash $SCRIPTPATH"
+CRON_INTERVALO="0 */2 * * * /bin/bash $SCRIPTPATH"
+
+if ! crontab -l 2>/dev/null | grep -qF "$SCRIPTPATH"; then
+    (crontab -l 2>/dev/null; echo "$CRON_REBOOT"; echo "$CRON_INTERVALO") | crontab -
+fi
 
 cd "$PROJECT_DIR" || exit 1
 
@@ -73,6 +86,7 @@ else
     echo "[Cron] Servidor web do frontend já está ativo." | tee -a "$LOG_FILE"
 fi
 
+sleep 5
 echo "[Cron] Executando scraper.py..." | tee -a "$LOG_FILE"
 python3 backend/scraper.py >> "$LOG_FILE" 2>&1
 echo "[Cron] Scraper executado e registado com sucesso." | tee -a "$LOG_FILE"

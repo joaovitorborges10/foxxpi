@@ -1,11 +1,27 @@
 #!/bin/bash
 
-PROJECT_DIR="$PWD"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$PROJECT_DIR/scraper_cron.log"
 PORTA_WEB=8080
 PORTA_BACKEND=5000
 
 cd "$PROJECT_DIR" || exit 1
+
+if ! pidof systemd >/dev/null 2>&1; then
+    echo "[Erro Crítico] O systemd não está ativado neste ambiente WSL." | tee -a "$LOG_FILE"
+    echo "Para habilitar o systemd, edite ou crie o ficheiro /etc/wsl.conf com o seguinte conteúdo:" | tee -a "$LOG_FILE"
+    echo -e "[boot]\nsystemd=true" | tee -a "$LOG_FILE"
+    echo "Depois, abra o PowerShell no Windows e execute 'wsl --shutdown', reabra o WSL e tente novamente." | tee -a "$LOG_FILE"
+    exit 1
+fi
+
+SCRIPTPATH="$PROJECT_DIR/$(basename "${BASH_SOURCE[0]}")"
+CRON_REBOOT="@reboot /bin/bash $SCRIPTPATH"
+CRON_INTERVALO="0 */2 * * * /bin/bash $SCRIPTPATH"
+
+if ! crontab -l 2>/dev/null | grep -qF "$SCRIPTPATH"; then
+    (crontab -l 2>/dev/null; echo "$CRON_REBOOT"; echo "$CRON_INTERVALO") | crontab -
+fi
 
 echo "=== Executando Scraper FoxxPI em $(date) ===" | tee -a "$LOG_FILE"
 
@@ -77,6 +93,7 @@ else
     echo "[Cron] Servidor web do frontend já está ativo." | tee -a "$LOG_FILE"
 fi
 
+sleep 5
 echo "[Cron] Executando scraper.py..." | tee -a "$LOG_FILE"
 python3 backend/scraper.py >> "$LOG_FILE" 2>&1
 echo "[Cron] Scraper executado e registado com sucesso." | tee -a "$LOG_FILE"

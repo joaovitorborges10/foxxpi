@@ -27,6 +27,13 @@ else
     echo "[+] Nenhum notify-send local encontrado para remover."
 fi
 
+echo "=== [Reset] A limpar o crontab do FoxxPI ==="
+crontab -l 2>/dev/null | grep -vE "run_scraper(_full_deploy|_wsl)?\.sh" | crontab -
+
+echo "=== [5/4] Limpando cache do Python (__pycache__) ==="
+find "$PROJECT_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
+find "$PROJECT_DIR" -name "*.pyc" -delete 2>/dev/null
+
 echo "=== [4/4] Limpando arquivos de log locais ==="
 rm -f scraper_cron.log backend.log frontend.log
 

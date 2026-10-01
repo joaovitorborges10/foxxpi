@@ -3,7 +3,8 @@ backend.log
 scraper_cron.log
 venv/
 .venv/
-__pycache__/
+backend/__pycache__/
+backend/*.pyc
 .vercel
 .env*
 *.key
