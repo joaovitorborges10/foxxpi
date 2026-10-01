@@ -1,0 +1,15 @@
+[Unit]
+Description=FoxxPI - UniEVANGELICA News Scraper Agent
+After=network.target docker.service mysql.service
+Wants=docker.service mysql.service
+
+[Service]
+Type=simple
+User=joaovitor
+WorkingDirectory=/home/joaovitor/foxxpi
+ExecStart=/usr/bin/python3 /home/joaovitor/foxxpi/scrapper.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
