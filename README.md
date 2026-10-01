@@ -29,7 +29,6 @@ Siga os passos abaixo no terminal:
 
 1. Clone o repositório e navegue até a pasta do projeto:
    ```bash
-   # Linux & WSL
    git clone https://github.com/joaovitorborges10/foxxpi.git
    cd foxxpi
    ```
