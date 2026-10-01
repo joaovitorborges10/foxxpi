@@ -16,7 +16,7 @@
 
 ## 🚀 Como Executar
 
-Para colocar o projeto em funcionamento em um ambiente **Linux**, certifique-se de que possui todas as dependências instaladas:
+Para colocar o projeto em funcionamento em um ambiente **Linux** ou Windows via **WSL** certifique-se de que possui todas as dependências requisitadas:
 - **Docker** e **Docker Compose**
 - **Python 3 / Pip**
 - **libnotify-bin /** _Instalado previamente através do package manager da sua distribuição._
