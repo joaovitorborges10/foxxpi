@@ -26,8 +26,8 @@ def listar_noticias():
             query += " AND categoria = %s"
             params.append(categoria)
 
-        query += " ORDER BY id DESC LIMIT 30"
-        
+        query += " ORDER BY data_publicacao DESC, id DESC LIMIT 30"
+                
         cursor.execute(query, params)
         noticias = cursor.fetchall()
 
