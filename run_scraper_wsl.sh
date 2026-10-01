@@ -15,24 +15,16 @@ if ! pidof systemd >/dev/null 2>&1; then
     exit 1
 fi
 
-SCRIPTPATH="$PROJECT_DIR/$(basename "${BASH_SOURCE[0]}")"
-CRON_REBOOT="@reboot /bin/bash $SCRIPTPATH"
-CRON_INTERVALO="0 */2 * * * /bin/bash $SCRIPTPATH"
-
-if ! crontab -l 2>/dev/null | grep -qF "$SCRIPTPATH"; then
-    (crontab -l 2>/dev/null; echo "$CRON_REBOOT"; echo "$CRON_INTERVALO") | crontab -
-fi
-
-echo "=== Executando Scraper FoxxPI em $(date) ===" | tee -a "$LOG_FILE"
+echo "=== Executando Inicialização WSL FoxxPI em $(date) ===" | tee -a "$LOG_FILE"
 
 LOCAL_BIN_DIR="$HOME/.local/bin"
 mkdir -p "$LOCAL_BIN_DIR"
 
 if [ -f "$PROJECT_DIR/bin/notify-send" ]; then
-    echo "[Cron] A configurar o notify-send personalizado..." | tee -a "$LOG_FILE"
+    echo "[Init] A configurar o notify-send personalizado..." | tee -a "$LOG_FILE"
     cp "$PROJECT_DIR/bin/notify-send" "$LOCAL_BIN_DIR/notify-send"
     chmod +x "$LOCAL_BIN_DIR/notify-send"
-    echo "[Cron] notify-send personalizado instalado e com permissões ativas em $LOCAL_BIN_DIR." | tee -a "$LOG_FILE"
+    echo "[Init] notify-send personalizado instalado e com permissões ativas em $LOCAL_BIN_DIR." | tee -a "$LOG_FILE"
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -44,59 +36,57 @@ elif [ -d ".venv" ]; then
 fi
 
 if [ -f "$PROJECT_DIR/requirements.txt" ]; then
-    echo "[Cron] Instalando dependências do requirements.txt..." | tee -a "$LOG_FILE"
+    echo "[Init] Instalando dependências do requirements.txt..." | tee -a "$LOG_FILE"
     pip install -r "$PROJECT_DIR/requirements.txt" --break-system-packages >> "$LOG_FILE" 2>&1
-    echo "[Cron] Dependências verificadas/instaladas com sucesso." | tee -a "$LOG_FILE"
+    echo "[Init] Dependências verificadas/instaladas com sucesso." | tee -a "$LOG_FILE"
 fi
 
 if [ -f "docker-compose.yml" ]; then
-    echo "[Cron] Verificando e subindo serviços via Docker Compose..." | tee -a "$LOG_FILE"
+    echo "[Init] Verificando e subindo serviços via Docker Compose..." | tee -a "$LOG_FILE"
     docker compose up -d >> "$LOG_FILE" 2>&1
     
-    echo "[Cron] Aguardando o MySQL inicializar..." | tee -a "$LOG_FILE"
+    echo "[Init] Aguardando o MySQL inicializar..." | tee -a "$LOG_FILE"
     until docker exec foxxpi_mysql_db mysqladmin ping -h 127.0.0.1 -u root -p'foxxpiroot' --silent 2>/dev/null; do
         sleep 2
     done
-    echo "[Cron] MySQL respondeu ao ping. Aguardando estabilização da rede..." | tee -a "$LOG_FILE"
+    echo "[Init] MySQL respondeu ao ping. Aguardando estabilização da rede..." | tee -a "$LOG_FILE"
     sleep 4
-    echo "[Cron] MySQL pronto e operacional." | tee -a "$LOG_FILE"
+    echo "[Init] MySQL pronto e operacional." | tee -a "$LOG_FILE"
 fi
 
 if [ -f "$PROJECT_DIR/foxxpi_database_schema.sql" ]; then
-    echo "[Cron] Aplicando schema do banco de dados..." | tee -a "$LOG_FILE"
+    echo "[Init] Aplicando schema do banco de dados..." | tee -a "$LOG_FILE"
     docker exec -i foxxpi_mysql_db mysql -h 127.0.0.1 -u root -p'foxxpiroot' foxxpi_database < "$PROJECT_DIR/foxxpi_database_schema.sql" >> "$LOG_FILE" 2>&1
-    echo "[Cron] Schema aplicado com sucesso." | tee -a "$LOG_FILE"
-fi
-
-if [ -f "$PROJECT_DIR/database_autodelete_cron.sql" ]; then
-    echo "[Cron] Aplicando evento de autodelete (scheduler)..." | tee -a "$LOG_FILE"
-    docker exec -i foxxpi_mysql_db mysql -h 127.0.0.1 -u root -p'foxxpiroot' foxxpi_database < "$PROJECT_DIR/database_autodelete_cron.sql" >> "$LOG_FILE" 2>&1
-    echo "[Cron] Evento de autodelete configurado com sucesso." | tee -a "$LOG_FILE"
+    echo "[Init] Schema aplicado com sucesso." | tee -a "$LOG_FILE"
 fi
 
 if ! pgrep -f "backend/main.py" > /dev/null; then
-    echo "[Cron] Subindo backend/main.py..." | tee -a "$LOG_FILE"
+    echo "[Init] Subindo backend/main.py..." | tee -a "$LOG_FILE"
     nohup python3 backend/main.py >> "$PROJECT_DIR/backend.log" 2>&1 &
     BACKEND_PID=$!
     sleep 3
-    echo "[Cron] Backend iniciado com PID: $BACKEND_PID." | tee -a "$LOG_FILE"
+    echo "[Init] Backend iniciado com PID: $BACKEND_PID." | tee -a "$LOG_FILE"
 else
-    echo "[Cron] Backend já se encontra ativo." | tee -a "$LOG_FILE"
+    echo "[Init] Backend já se encontra ativo." | tee -a "$LOG_FILE"
 fi
 
 if ! pgrep -f "http.server $PORTA_WEB" > /dev/null; then
-    echo "[Cron] Subindo servidor web estático na porta $PORTA_WEB..." | tee -a "$LOG_FILE"
+    echo "[Init] Subindo servidor web estático na porta $PORTA_WEB..." | tee -a "$LOG_FILE"
     nohup python3 -m http.server $PORTA_WEB --bind 0.0.0.0 --directory "$PROJECT_DIR/frontend" >> "$PROJECT_DIR/frontend.log" 2>&1 &
     FRONT_PID=$!
-    echo "[Cron] Frontend iniciado na porta $PORTA_WEB com PID: $FRONT_PID." | tee -a "$LOG_FILE"
+    echo "[Init] Frontend iniciado na porta $PORTA_WEB com PID: $FRONT_PID." | tee -a "$LOG_FILE"
 else
-    echo "[Cron] Servidor web do frontend já está ativo." | tee -a "$LOG_FILE"
+    echo "[Init] Servidor web do frontend já está ativo." | tee -a "$LOG_FILE"
 fi
 
-sleep 5
-echo "[Cron] Executando scraper.py..." | tee -a "$LOG_FILE"
-python3 backend/scraper.py >> "$LOG_FILE" 2>&1
-echo "[Cron] Scraper executado e registado com sucesso." | tee -a "$LOG_FILE"
+if ! pgrep -f "backend/scraper.py" > /dev/null; then
+    echo "[Init] Subindo scraper.py em loop contínuo..." | tee -a "$LOG_FILE"
+    nohup python3 backend/scraper.py >> "$LOG_FILE" 2>&1 &
+    SCRAPER_PID=$!
+    echo "[Init] Scraper iniciado em background com PID: $SCRAPER_PID." | tee -a "$LOG_FILE"
+else
+    echo "[Init] Scraper já se encontra ativo." | tee -a "$LOG_FILE"
+fi
 
 echo "=== Concluído em $(date) ===" | tee -a "$LOG_FILE"
 echo "" >> "$LOG_FILE"

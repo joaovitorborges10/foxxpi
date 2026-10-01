@@ -7,7 +7,7 @@ from database import obter_conexao
 import os
 import subprocess
 
-ddef enviar_notificacao(titulo, mensagem):
+def enviar_notificacao(titulo, mensagem):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] [Notificação] Tentando enviar: '{titulo}' -> '{mensagem}'")
     
@@ -229,5 +229,14 @@ def monitorar_homepage():
         if conn:
             conn.close()
 
+import time
+
 if __name__ == "__main__":
-    monitorar_homepage()
+    print("[FoxxPI Scraper] Serviço de monitorização em tempo real iniciado.")
+    while True:
+        try:
+            monitorar_homepage()
+        except Exception as e:
+            print(f"[FoxxPI Scraper] Erro no ciclo: {e}")
+        
+        time.sleep(300)
