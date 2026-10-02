@@ -16,11 +16,11 @@
 
 ## 🚀 Como Executar
 
-Para colocar o projeto em funcionamento em um ambiente **Linux** ou Windows via **WSL** certifique-se de que possui todas as dependências requisitadas:
+Para colocar o projeto em funcionamento em um ambiente **_Linux_** ou _(Windows Subsystem for Linux)_ certifique-se de que possui todas as dependências requisitadas:
 - **Docker** e **Docker Compose**
 - **Python 3 / Pip**
 - **libnotify-bin /** _Instalado previamente através do package manager da sua distribuição._
-- *(Opcional)* Vercel CLI e Taiscale _(Rootless)_ caso Opte pela Opção de Debug Remoto no _install_scraper.sh_.
+- *(Opcional)* Vercel CLI e Tailscale _(Rootless)_ caso Opte pela Opção de Debug Remoto no **_install_scraper.sh_**.
 
 ## 🔧 Configuração
 
