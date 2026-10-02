@@ -46,7 +46,7 @@ O Ambiente do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Coma
 
 - Verificar Estado e Logs com: ```systemctl status foxxpi.service```
 - Encerrar o Agente com: ```systemctl stop foxxpi.service```
-- Iniciar Manualmente o Agente com: ```systemctl status foxxpi.service```
+- Iniciar Manualmente o Agente com: ```systemctl start foxxpi.service```
 - Habilita-lo na Inicialização do Sistema com: ```systemctl enable foxxpi.service```
   
 > Lembrando que toda a Configuração e Ativação do Daemon é Automatizada via _install_scraper.sh_ conforme especificado nos passos anteriores desse _README.md_
