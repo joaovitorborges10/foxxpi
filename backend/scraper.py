@@ -100,6 +100,20 @@ def parse_data(data_str):
     except (ValueError, AttributeError):
         return None
 
+def resolver_titulo_por_slug(link, titulo_atual):
+    padrao_invalido = (
+        not titulo_atual or 
+        len(titulo_atual) < 15 or 
+        re.fullmatch(r'[\d\s/]+', titulo_atual) or 
+        re.search(r'^\d{2}/\d{2}/\d{4}$', titulo_atual.strip())
+    )
+    if padrao_invalido:
+        slug = link.rstrip('/').split('/')[-1]
+        if slug and slug != "noticia":
+            titulo_limpo = slug.replace('-', ' ').capitalize()
+            return titulo_limpo
+    return titulo_atual
+
 def monitorar_homepage():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     conn = None
@@ -180,20 +194,6 @@ def monitorar_homepage():
             link_bruto = link_tag['href'].strip()
             link = urljoin(URL_NOTICIAS, link_bruto)
             titulo = resolver_titulo_por_slug(link, titulo)
-
-            def resolver_titulo_por_slug(link, titulo_atual):
-                padrao_invalido = (
-                    not titulo_atual or 
-                    len(titulo_atual) < 15 or 
-                    re.fullmatch(r'[\d\s/]+', titulo_atual) or 
-                    re.search(r'^\d{2}/\d{2}/\d{4}$', titulo_atual.strip())
-                )
-                if padrao_invalido:
-                    slug = link.rstrip('/').split('/')[-1]
-                    if slug and slug != "noticia":
-                        titulo_limpo = slug.replace('-', ' ').capitalize()
-                        return titulo_limpo
-                return titulo_atual
 
             if len(titulo) < 15 or re.search(r'\d{1,2}\s+e\s+\d{1,2}', titulo, re.IGNORECASE) or re.fullmatch(r'[\d\sde/]+', titulo):
                 slug = link.rstrip('/').split('/')[-1]
