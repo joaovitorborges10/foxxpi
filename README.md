@@ -51,6 +51,8 @@ O Ambiente do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Coma
   
 > Lembrando que toda a Configuração e Ativação do Daemon é Automatizada via _install_scraper.sh_ conforme especificado nos passos anteriores desse _README.md_
 
+---
+
 2. Alternativamente é Possível Forçar o Encerramento dos Serviços e do Daemon _foxxpi.service_ através do script nativo _stop_services.sh_ como no exemplo abaixo:
 ```bash
 # Encerrar Serviços
