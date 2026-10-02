@@ -49,7 +49,7 @@ Siga os passos abaixo no terminal:
    ./stop_services.sh
   ```
 
-2. Para **ELIMINAR** todo o Agente incluindo **DESTRUIR** o Banco de Dados utilize o script _reset_all.sh_
+2. Para **ELIMINAR** todo o Agente incluindo **DESTRUIR** o Banco de Dados utilize o script **_reset_all.sh_**
   ```bash
    chmod +x reset_all.sh
    ./reset_all.sh
