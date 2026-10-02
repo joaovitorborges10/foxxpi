@@ -43,7 +43,7 @@ Siga os passos abaixo no terminal:
 
 ## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
-1. Caso seja necessário o encerramento do agente utilize o script _stop_services.sh_
+1. Caso seja necessário o encerramento do agente utilize o script **_stop_services.sh_**
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
