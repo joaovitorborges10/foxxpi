@@ -46,7 +46,7 @@ DATA_CORTE = datetime(2026, 8, 1)
 KEYWORDS_TECH = [
     'tecnologia', 'programação', 'desenvolvimento', 'software', 'ti', 
     'inteligência artificial', 'ia', 'python', 'javascript', 'algoritmo',
-    'computação', 'hackathon', 'maratona', 'dados', 'cybersecurity', 'sistema',
+    'computação', 'hackathon', 'hack', 'maratona', 'dados', 'cybersecurity', 'sistema',
     'engenharia de software', 'sistemas de informação', 'ciência da computação',
     'análise e desenvolvimento', 'inovação', 'ciência', 'transformação digital'
 ]

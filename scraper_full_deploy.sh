@@ -57,7 +57,7 @@ fi
 
 if ! sudo tailscale funnel status 2>&1 | grep -q "5000"; then
     echo "[Deploy] Subindo Tailscale Funnel na porta $PORTA_BACKEND..." | tee -a "$LOG_FILE"
-    sudo tailscale funnel --bg $PORTA_BACKEND >> "$LOG_FILE" 2>&1
+    tailscale funnel --bg $PORTA_BACKEND >> "$LOG_FILE" 2>&1
     echo "[Deploy] Tailscale Funnel ativado na porta $PORTA_BACKEND." | tee -a "$LOG_FILE"
 else
     echo "[Deploy] Tailscale Funnel já está ativo." | tee -a "$LOG_FILE"
