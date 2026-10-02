@@ -42,7 +42,8 @@ Siga os passos abaixo no terminal:
 
 ## 🚫 Gerenciamento de Processos e Reset Completo do Ambiente
 
-1. O Gerenciamento do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Comandos Nativos como:
+O Ambiente do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Comandos Nativos como:
+
 - Verificar Estado e Logs com: ```systemctl status foxxpi.service```
 - Encerrar o Agente com: ```systemctl stop foxxpi.service```
 - Iniciar Manualmente o Agente com: ```systemctl status foxxpi.service```
@@ -52,12 +53,14 @@ Siga os passos abaixo no terminal:
 
 2. Alternativamente é Possível Forçar o Encerramento dos Serviços e do Daemon _foxxpi.service_ através do script nativo _stop_services.sh_ como no exemplo abaixo:
 ```bash
+# Encerrar Serviços
 chmod +x stop_services.sh
 ./stop_services.sh
  ```
 
 3. Mesma Lógica se Aplica ao Script _reset_all.sh_ para Reverter a Instalação e **DESTRUIR** o Container MySQL e o Banco de Dados:
 ```bash
+# Reverter Ações do FoxxPI
 chmod +x reset_all.sh
 ./reset_all.sh
  ``` 
