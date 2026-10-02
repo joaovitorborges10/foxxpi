@@ -20,7 +20,7 @@ Para colocar o projeto em funcionamento em um ambiente **Linux** ou Windows via 
 - **Docker** e **Docker Compose**
 - **Python 3 / Pip**
 - **libnotify-bin /** _Instalado previamente através do package manager da sua distribuição._
-- **Tailscale** configurado e com permissão non-root
+- **Tailscale** configurado e com permissão _non-root_
 - *(Opcional)* Vercel CLI via `npm` (ferramenta usada opcionalmente apenas para fins de deploy/serverless, sem ligação direta com a execução local do projeto).
 
 ## 🔧 Configuração
