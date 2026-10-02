@@ -50,7 +50,7 @@ echo "[Info] Script selecionado para o daemon: $(basename "$TARGET_SCRIPT") ($EN
 
 chmod +x "$TARGET_SCRIPT"
 
-echo "[Info] A criar a unit do systemd em $SERVICE_PATH..." | tee -a "$LOG_FILE"
+echo "[Info] A criar a unit do systemd em $SERVICE_PATH com o utilizador $CURRENT_USER..." | tee -a "$LOG_FILE"
 
 sudo bash -c "cat > $SERVICE_PATH" <<EOF
 [Unit]

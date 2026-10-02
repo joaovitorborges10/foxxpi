@@ -6,22 +6,27 @@ from bs4 import BeautifulSoup
 from database import obter_conexao
 import os
 import subprocess
+import unicodedata
+import time
 
 def enviar_notificacao(titulo, mensagem):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] [Notificação] Tentando enviar: '{titulo}' -> '{mensagem}'")
-    
     try:
-        wrapper_local = os.path.expanduser("~/.local/bin/notify-send")
-        
-        if os.path.exists(wrapper_local) and os.access(wrapper_local, os.X_OK):
-            cmd = wrapper_local
-        elif os.path.exists("/usr/bin/notify-send"):
-            cmd = "/usr/bin/notify-send"
+        is_wsl = False
+        try:
+            with open('/proc/version', 'r') as f:
+                if 'microsoft' in f.read().lower():
+                    is_wsl = True
+        except Exception:
+            pass
+
+        wrapper_wsl = os.path.expanduser("~/.local/bin/notify-send")
+        if is_wsl and os.path.exists(wrapper_wsl) and os.access(wrapper_wsl, os.X_OK):
+            cmd = wrapper_wsl
         else:
             cmd = "notify-send"
 
-        # Garante o ambiente do D-Bus e Display para o subprocesso
         env = os.environ.copy()
         env["DISPLAY"] = ":0"
         env["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
@@ -43,49 +48,47 @@ def enviar_notificacao(titulo, mensagem):
 URL_NOTICIAS = "https://www4.unievangelica.edu.br/noticia"
 DATA_CORTE = datetime(2026, 8, 1)
 
-KEYWORDS_TECH = [
-    'tecnologia', 'programação', 'desenvolvimento', 'software', 'ti', 
-    'inteligência artificial', 'ia', 'python', 'javascript', 'algoritmo',
-    'computação', 'hackathon', 'hack', 'maratona', 'dados', 'cybersecurity', 'sistema',
-    'engenharia de software', 'sistemas de informação', 'ciência da computação',
-    'análise e desenvolvimento', 'inovação', 'ciência', 'transformação digital'
-]
-
-KEYWORDS_EVENTOS = [
-    'evento', 'workshop', 'palestra', 'semana acadêmica', 'webinar',
-    'simpósio', 'conferência', 'inscrições abertas', 'minicurso', 'meetup',
-    'sinacen', 'semana', 'jornada', 'congresso', 'começa hoje', 'início'
-]
-
-KEYWORDS_IGNORAR = [
-    'fale com', 'reitor', 'ouvidoria', 'trabalhe conosco', 'portal do aluno',
-    'área do aluno', 'seja bem-vindo', 'politica de privacidade', 'como ingressar',
-    'fale conosco', 'agende sua visita', 'inscreva-se', 'editais', 'graduação', 'pós-graduação'
-]
-
-def contem_palavra_chave(texto, keywords):
-    for kw in keywords:
-        if ' ' in kw:
-            if kw in texto:
-                return True
-        else:
-            pattern = rf'\b{re.escape(kw)}\b'
-            if re.search(pattern, texto, re.IGNORECASE):
-                return True
-    return False
+KEYWORDS_IGNORAR = []
 
 def classificar_noticia(titulo):
     titulo_lc = titulo.lower()
-    eh_tech = contem_palavra_chave(titulo_lc, KEYWORDS_TECH)
-    eh_evento = contem_palavra_chave(titulo_lc, KEYWORDS_EVENTOS)
+    titulo_norm = ''.join(c for c in unicodedata.normalize('NFD', titulo_lc) if unicodedata.category(c) != 'Mn')
     
-    if eh_tech and eh_evento:
+    proibidos = [
+        'psicologia', 'medicina', 'direito', 'enfermagem', 'odontologia', 
+        'fisioterapia', 'pedagogia', 'educacao fisica', 'biomedicina', 
+        'farmacia', 'nutricao', 'psico', 'enfermaria', 'cameg', 'cocalzinho',
+        'ciencias e meio ambiente', 'vestibular', 'bolsa', 'recadastramento', 
+        'filantropia', 'homenagem', 'contador', 'solidariedade', 'social', 
+        'processo seletivo', 'matricula', 'fies', 'prouni', 'mensalidade',
+        'orgaos', 'setembro verde', 'doacao', 'arvore', 'mudas', 'ambiental',
+        'extensionistas', 'mostra cientifica'
+    ]
+    
+    if any(p in titulo_norm for p in proibidos):
+        return 'Geral', False
+
+    termos_eventos_especiais = ['fnesp', 'unicietec', 'hacklab', 'hackathon']
+    if any(te in titulo_norm for te in termos_eventos_especiais):
         return 'Evento de Software', True
-    elif eh_tech:
-        return 'Tecnologia', True
-    elif eh_evento:
-        return 'Evento', False
+
+    termos_tech = [
+        'software', 'programacao', 'computacao', 'ia', 'python', 'javascript', 
+        'aws', 'cybersecurity', 'desenvolvimento', 'algoritmo', 'engenharia de software',
+        'sistemas de informacao', 'ciencia da computacao', 'hack', 'hack lab', 
+        'sinacen', 'ti', 'startup', 'startups', 'tecnologico', 'tecnologica', 'empreendedor'
+    ]
     
+    termos_evento = ['evento', 'workshop', 'palestra', 'semana', 'congresso', 'feira', 'inicio', 'comeca', 'mostra', 'hack', 'hack lab', 'empreendedor']
+
+    tem_tech = any(t in titulo_norm for t in termos_tech)
+    tem_evento = any(e in titulo_norm for e in termos_evento)
+
+    if tem_tech and tem_evento:
+        return 'Evento de Software', True
+    elif tem_tech:
+        return 'Tecnologia', True
+
     return 'Geral', False
 
 def parse_data(data_str):
@@ -173,12 +176,38 @@ def monitorar_homepage():
 
             if not titulo or len(titulo) < 15 or re.fullmatch(r'Campus\s+[A-Za-zÀ-Ú\s]+|Todos os Campi', titulo, flags=re.IGNORECASE):
                 continue
-
+                
             link_bruto = link_tag['href'].strip()
             link = urljoin(URL_NOTICIAS, link_bruto)
+            titulo = resolver_titulo_por_slug(link, titulo)
+
+            def resolver_titulo_por_slug(link, titulo_atual):
+                padrao_invalido = (
+                    not titulo_atual or 
+                    len(titulo_atual) < 15 or 
+                    re.fullmatch(r'[\d\s/]+', titulo_atual) or 
+                    re.search(r'^\d{2}/\d{2}/\d{4}$', titulo_atual.strip())
+                )
+                if padrao_invalido:
+                    slug = link.rstrip('/').split('/')[-1]
+                    if slug and slug != "noticia":
+                        titulo_limpo = slug.replace('-', ' ').capitalize()
+                        return titulo_limpo
+                return titulo_atual
+
+            if len(titulo) < 15 or re.search(r'\d{1,2}\s+e\s+\d{1,2}', titulo, re.IGNORECASE) or re.fullmatch(r'[\d\sde/]+', titulo):
+                slug = link.rstrip('/').split('/')[-1]
+                if slug and slug != "noticia":
+                    titulo = slug.replace('-', ' ').capitalize()
 
             if "tecnologia-em-transformacao-aws-tech-day" in link.lower():
                 titulo = "Tecnologia em transformação: AWS Tech Day Anápolis discute IA, nuvem e escalabilidade"
+
+            if "ecossistema-de-inovacao" in link.lower() or "36-startups" in link.lower():
+                titulo = "UniEVANGÉLICA fortalece ecossistema de inovação com contratos para 36 startups"
+
+            if "feira-do-empreendedor" in link.lower():
+                titulo = "Feira do Empreendedor chega à UniEVANGÉLICA com programação gratuita sobre negócios, inclusão e cultura"
 
             titulo_lc = titulo.lower()
             if any(termo in titulo_lc for termo in KEYWORDS_IGNORAR):
@@ -229,14 +258,8 @@ def monitorar_homepage():
         if conn:
             conn.close()
 
-import time
-
 if __name__ == "__main__":
-    print("[FoxxPI Scraper] Serviço de monitorização em tempo real iniciado.")
+    print("[FoxxPI Scraper] Serviço iniciado em modo contínuo (Tempo Real).")
     while True:
-        try:
-            monitorar_homepage()
-        except Exception as e:
-            print(f"[FoxxPI Scraper] Erro no ciclo: {e}")
-        
-        time.sleep(300)
+        monitorar_homepage()
+        time.sleep(30)

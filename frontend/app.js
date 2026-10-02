@@ -4,13 +4,13 @@ let API_BASE;
 if (hostname.includes('vercel.app')) {
   API_BASE = "https://joao-desktop.tailddbe06.ts.net"; 
 } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
-  API_BASE = "http://localhost:5000";                
+  API_BASE = "http://localhost:5000";                    
 } else {
   API_BASE = "http://100.83.84.41:5000";             
 }
 
 const API_URL = `${API_BASE}/api/noticias`;
-let filtroAtual = 'relevantes=true';
+let filtroAtual = 'categoria=Tecnologia';
 
 function formatarDataSegura(dataValor) {
     if (!dataValor || dataValor === 'null') return 'Data não informada';
@@ -54,20 +54,25 @@ async function carregarNoticias(queryParams = filtroAtual, silencioso = false) {
             return;
         }
 
-        noticias.forEach(item => {
+        noticias.forEach(rawItem => {
+            const categoriaCorrigida = rawItem.categoria || 'Geral';
+            
             const card = document.createElement('div');
             card.className = 'card';
 
             let badgeClass = 'badge-geral';
-            if (item.categoria === 'Tecnologia') badgeClass = 'badge-tech';
-            if (item.categoria && item.categoria.includes('Evento')) badgeClass = 'badge-evento';
+            if (categoriaCorrigida === 'Tecnologia') {
+                badgeClass = 'badge-tech';
+            } else if (categoriaCorrigida && categoriaCorrigida.includes('Evento')) {
+                badgeClass = 'badge-evento';
+            }
 
-            const dataExibicao = formatarDataSegura(item.data_publicacao || item.criado_em);
+            const dataExibicao = formatarDataSegura(rawItem.data_publicacao || rawItem.criado_em);
 
             card.innerHTML = `
-                <span class="badge ${badgeClass}">${item.categoria || 'Geral'}</span>
+                <span class="badge ${badgeClass}">${categoriaCorrigida}</span>
                 <h3>
-                    <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
+                    <a href="${rawItem.link}" target="_blank" rel="noopener noreferrer">${rawItem.titulo}</a>
                 </h3>
                 <div class="meta">Publicado em: ${dataExibicao}</div>
             `;

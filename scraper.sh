@@ -26,13 +26,20 @@ if [ -f "$PROJECT_DIR/requirements.txt" ]; then
     echo "[Init] Dependências verificadas/instaladas com sucesso." | tee -a "$LOG_FILE"
 fi
 
+echo "[Init] Aguardando o Docker Daemon responder..." | tee -a "$LOG_FILE"
+until docker info >/dev/null 2>&1; do
+    sleep 2
+done
+echo "[Init] Docker Daemon online." | tee -a "$LOG_FILE"
+
 if [ -f "docker-compose.yml" ]; then
-    echo "[Init] Verificando e subindo serviços via Docker Compose..." | tee -a "$LOG_FILE"
+    echo "[Init] A descarregar imagens (pull) e subindo serviços via Docker Compose..." | tee -a "$LOG_FILE"
+    docker compose pull >> "$LOG_FILE" 2>&1
     docker compose up -d >> "$LOG_FILE" 2>&1
     
     echo "[Init] Aguardando o MySQL inicializar..." | tee -a "$LOG_FILE"
     until docker exec foxxpi_mysql_db mysqladmin ping -h 127.0.0.1 -u root -p'foxxpiroot' --silent 2>/dev/null; do
-        sleep 2
+        sleep 3
     done
     echo "[Init] MySQL respondeu ao ping. Aguardando estabilização da rede..." | tee -a "$LOG_FILE"
     sleep 4

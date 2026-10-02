@@ -21,12 +21,13 @@ def listar_noticias():
 
         if relevantes == 'true':
             query += " AND eh_relevante = TRUE"
-        elif categoria:
+            
+        if categoria:
             query += " AND categoria = %s"
             params.append(categoria)
 
         query += " ORDER BY data_publicacao DESC, id DESC LIMIT 30"
-                
+            
         cursor.execute(query, params)
         noticias = cursor.fetchall()
 

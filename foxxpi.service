@@ -5,9 +5,9 @@ Wants=docker.service mysql.service
 
 [Service]
 Type=simple
-User=joaovitor
-WorkingDirectory=/home/joaovitor/foxxpi
-ExecStart=/usr/bin/python3 /home/joaovitor/foxxpi/scrapper.py
+User=joao
+WorkingDirectory=/home/joao/foxxpi
+ExecStart=/usr/bin/python3 /home/joao/foxxpi/scraper.py
 Restart=always
 RestartSec=10
 
