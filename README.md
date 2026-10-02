@@ -35,7 +35,7 @@ Siga os passos abaixo no terminal:
 2. Dê permissão e execute o script de autoconfiguração:
    ```bash
    # Instalação
-   chmod +x install_scraper.sh
+   chmod +x *.sh
    ./install_scraper.sh
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
@@ -56,14 +56,12 @@ O Ambiente do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Coma
 2. Alternativamente é Possível Forçar o Encerramento dos Serviços e do Daemon _foxxpi.service_ através do script nativo _stop_services.sh_ como no exemplo abaixo:
 ```bash
 # Encerrar Serviços
-chmod +x stop_services.sh
 ./stop_services.sh
  ```
 
 3. Mesma Lógica se Aplica ao Script _reset_all.sh_ para Reverter a Instalação e **DESTRUIR** o Container MySQL e o Banco de Dados:
 ```bash
 # Reverter Ações do FoxxPI
-chmod +x reset_all.sh
 ./reset_all.sh
  ``` 
 ## ⚙️  Estrutura do Projeto
