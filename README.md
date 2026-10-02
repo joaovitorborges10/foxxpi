@@ -12,7 +12,7 @@
 - **Base de Dados:** MySQL (`foxxpi_database`)
 - **Backend / API:** Flask
 - **Frontend:** HTML5, CSS3, JavaScript (Fetch API + Polling)
-- **Automação:** Shell Scripting (`bash`) e `cron` no Linux
+- **Automação:** Shell Scripting (`bash`) e `systemd` no Linux
 
 ## 🚀 Como Executar
 
