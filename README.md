@@ -29,12 +29,13 @@ Siga os passos abaixo no terminal:
 
 1. Clone o repositório e navegue até a pasta do projeto:
    ```bash
+   # Onde deseja alocar o Agente.
    git clone https://github.com/joaovitorborges10/foxxpi.git
    cd foxxpi
    ```
 2. Dê permissão e execute o script de autoconfiguração:
    ```bash
-   # Linux
+   # Instalação
    chmod +x install.sh
    ./install.sh
    ```
