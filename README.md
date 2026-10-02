@@ -36,8 +36,8 @@ Siga os passos abaixo no terminal:
 2. Dê permissão e execute o script de autoconfiguração:
    ```bash
    # Instalação
-   chmod +x install.sh
-   ./install.sh
+   chmod +x install_scraper.sh
+   ./install_scraper.sh
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
