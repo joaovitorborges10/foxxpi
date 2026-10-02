@@ -20,7 +20,7 @@ Para colocar o projeto em funcionamento em um ambiente **Linux** ou Windows via 
 - **Docker** e **Docker Compose**
 - **Python 3 / Pip**
 - **libnotify-bin /** _Instalado previamente através do package manager da sua distribuição._
-- **Tailscale** configurado
+- **Tailscale** configurado e com permissão non-root
 - *(Opcional)* Vercel CLI via `npm` (ferramenta usada opcionalmente apenas para fins de deploy/serverless, sem ligação direta com a execução local do projeto).
 
 ## 🔧 Configuração
@@ -32,39 +32,23 @@ Siga os passos abaixo no terminal:
    git clone https://github.com/joaovitorborges10/foxxpi.git
    cd foxxpi
    ```
-2. Dê permissão de execução ao script de arranque (caso necessário):
+2. Dê permissão e execute o script de autoconfiguração:
    ```bash
    # Linux
-   chmod +x run_scraper.sh
-   chmod + x run_scraper_full_deploy.sh
-
-   # WSL
-   chmod +x run_scraper_wsl.sh
-   ```
-3. Execute o script de arranque para iniciar os serviços (Docker, Banco de Dados, Backend, Funnel, Frontend e Scraper) e acompanhe os logs gerados:
-   ```bash
-   # Linux
-   ./run_scraper.sh
-
-   # WSL
-   ./run_scraper_wsl.sh
-   ```
-4. Para Execução do Ambiente Completo Incluindo Deploy Local via **Vercel** e **Tailscale Funnel**:
-   ```bash
-   # Linux
-   ./run_scraper_full_deploy.sh
+   chmod +x install.sh
+   ./install.sh
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
 ## 🚫 Encerramento de Processos e Reset Completo do Ambiente
 
-1. Caso seja necessário o encerramento dos processos utilize o script **_stop_services.sh_**
+1. Caso seja necessário o encerramento do agente utilize o script **_stop_services.sh_**
   ```bash
    chmod +x stop_services.sh
    ./stop_services.sh
   ```
 
-2. Para **ELIMINAR** todo o serviço incluindo **DESTRUIR** o Banco de Dados utilize o script **_reset_all.sh_**
+2. Para **ELIMINAR** todo o Agente incluindo **DESTRUIR** o Banco de Dados utilize o script **_reset_all.sh_**
   ```bash
    chmod +x reset_all.sh
    ./reset_all.sh
@@ -76,23 +60,27 @@ Siga os passos abaixo no terminal:
  ```text 
 foxxpi/
 ├── api/
-│   └── index.py                    # Serverless Function / Entrypoint de redirecionamento para a Vercel
+│   └── index.py                     # Serverless Function / Entrypoint de redirecionamento para a Vercel
 ├── backend/
-│   ├── database.py                 # Conexão e gerenciamento do pool do MySQL
-│   ├── main.py                     # API REST (Flask) para servir os endpoints de notícias
-│   └── scraper.py                  # Engine de raspagem, parsing e persistência de dados
+│   ├── database.py                  # Conexão e gerenciamento do pool do MySQL
+│   ├── main.py                      # API REST (Flask) para servir os endpoints de notícias
+│   └── scraper.py                   # Engine de raspagem, parsing e persistência de dados
 ├── frontend/
-│   ├── index.html                  # Interface web (Single Page Application)
-│   ├── app.js                      # Consumo da API, comutação de ambiente e auto-refresh
-│   └── style.css                   # Estilização responsiva do painel de notícias
-├── database_autodelete_cron.sql    # Event Scheduler do MySQL para purga automática de dados
-├── docker-compose.yml              # Orquestração do container MySQL com o agendador nativo ativo
-├── foxxpi_database_schema.sql      # Schema de tabelas e índices da base de dados
-├── run_scraper.sh                  # Orquestrador de processos (Docker, DB, Backend, Funnel, Frontend e Scraper)
-├── stop_services.sh                # Script para paragem segura dos serviços nas portas 5000 e 8080
-├── reset_all.sh                    # Script para reset total do ambiente e limpeza do banco de dados
-├── requirements.txt                # Dependências Python do projeto
-├── vercel.json                     # Configuração de rotas e build serverless da Vercel
-├── logo.png                        # Identidade visual e marca do FoxxPI
-└── README.md                       # Documentação do repositório
+│   ├── index.html                   # Interface web (Single Page Application)
+│   ├── app.js                       # Consumo da API, comutação de ambiente e auto-refresh
+│   └── style.css                    # Estilização responsiva do painel de notícias
+├── database_autodelete_cron.sql     # Event Scheduler do MySQL para purga automática de dados
+├── docker-compose.yml               # Orquestração do container MySQL com o agendador nativo ativo
+├── foxxpi_database_schema.sql       # Schema de tabelas e índices da base de dados
+├── foxxpi.service                   # Unit file padrão do systemd
+├── install_scrapper.sh              # Script global interativo de setup do daemon (Systemd)
+├── scraper.sh                       # Orquestrador de processos para Linux Padrão
+├── scraper_full_deploy.sh           # Orquestrador de processos para Linux Full Deploy / Servidor
+├── scraper_wsl.sh                   # Orquestrador de processos para WSL
+├── stop_services.sh                 # Script para paragem segura dos serviços nas portas 5000 e 8080
+├── reset_all.sh                     # Script para reset total (systemd, funnel, portas, docker e logs)
+├── requirements.txt                 # Dependências Python do projeto
+├── vercel.json                      # Configuração de rotas e build serverless da Vercel
+├── logo.png                         # Identidade visual e marca do FoxxPI
+└── README.md                        # Documentação do repositório
  ``` 
