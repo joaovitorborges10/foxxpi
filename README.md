@@ -40,21 +40,27 @@ Siga os passos abaixo no terminal:
    ```
 > Acesse a aplicação no navegador em **`http://localhost:8080`** para visualizar o painel, testar o sistema e realizar eventuais debuggings.
 
-## 🚫 Encerramento de Processos e Reset Completo do Ambiente
+## 🚫 Gerenciamento de Processos e Reset Completo do Ambiente
 
-1. Caso seja necessário o encerramento do agente utilize o script **_stop_services.sh_**
-  ```bash
-   chmod +x stop_services.sh
-   ./stop_services.sh
-  ```
+1. O Gerenciamento do FoxxPI é Integrado ao SystemD por Padrão e pode Usufruir de Comandos Nativos como:
+- Verificar Estado e Logs com: ```systemctl status foxxpi.service```
+- Encerrar o Agente com: ```systemctl stop foxxpi.service```
+- Iniciar Manualmente o Agente com: ```systemctl status foxxpi.service```
+- Habilita-lo na Inicialização do Sistema com: ```systemctl enable foxxpi.service```
+  
+> Lembrando que toda a Configuração e Ativação do Daemon é Automatizada via _install_scraper.sh_ conforme especificado nos passos anteriores desse _README.md_
 
-2. Para **ELIMINAR** todo o Agente incluindo **DESTRUIR** o Banco de Dados utilize o script **_reset_all.sh_**
-  ```bash
-   chmod +x reset_all.sh
-   ./reset_all.sh
-   ```
-> Também podendo ser utilizado para regenerar o ambiente em eventuais incoerências e recriar o ecossistema como um todo a partir dos passos especificados nas guias anteriores desse _README.md_
+2. Alternativamente é Possível Forçar o Encerramento dos Serviços e do Daemon _foxxpi.service_ através do script nativo _stop_services.sh_ como no exemplo abaixo:
+```bash
+chmod +x stop_services.sh
+./stop_services.sh
+ ```
 
+3. Mesma Lógica se Aplica ao Script _reset_all.sh_ para Reverter a Instalação e **DESTRUIR** o Container MySQL e o Banco de Dados:
+```bash
+chmod +x reset_all.sh
+./reset_all.sh
+ ``` 
 ## ⚙️  Estrutura do Projeto
 
  ```text 
