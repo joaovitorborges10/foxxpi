@@ -53,10 +53,14 @@ else
     echo "[+] Nenhum notify-send local encontrado para remover."
 fi
 
-echo "=== [6/6] Limpando cache do Python e logs locais ==="
+echo "=== [6/6] Limpando cache do Python, logs locais e artefatos da Vercel ==="
 find "$PROJECT_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 find "$PROJECT_DIR" -name "*.pyc" -delete 2>/dev/null
 rm -f scraper_cron.log backend.log frontend.log setup_daemon.log cron_system.log
+if [ -d "$PROJECT_DIR/.vercel" ]; then
+    rm -rf "$PROJECT_DIR/.vercel"
+    echo "[+] Removida pasta de cache local da Vercel (.vercel)"
+fi
 
 sudo systemctl daemon-reload
 

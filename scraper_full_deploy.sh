@@ -52,6 +52,30 @@ if [ -f "$PROJECT_DIR/foxxpi_database_schema.sql" ]; then
     echo "[Deploy] Schema aplicado com sucesso." | tee -a "$LOG_FILE"
 fi
 
+# Automação do Vercel Link via injeção do project.json se não existir
+if [ ! -d "$PROJECT_DIR/.vercel" ]; then
+    echo "[Deploy] Criando diretório e configuração de vínculo da Vercel..." | tee -a "$LOG_FILE"
+    mkdir -p "$PROJECT_DIR/.vercel"
+    
+    # Se você souber o seu projectId e orgId do painel da Vercel, pode preencher abaixo. 
+    # Caso contrário, tentamos o vínculo automatizado não interativo se houver token configurado.
+    if [ -n "$VERCEL_ORG_ID" ] && [ -n "$VERCEL_PROJECT_ID" ]; then
+        cat <<EOF > "$PROJECT_DIR/.vercel/project.json"
+{
+  "orgId": "$VERCEL_ORG_ID",
+  "projectId": "$VERCEL_PROJECT_ID"
+}
+EOF
+        echo "[Deploy] Vínculo da Vercel injetado via variáveis de ambiente." | tee -a "$LOG_FILE"
+    else
+        # Fallback gerando via CLI com token ou link direto se autenticado globalmente
+        npx vercel link --yes --project foxxpi >> "$LOG_FILE" 2>&1
+        echo "[Deploy] Tentativa de vínculo automático concluída." | tee -a "$LOG_FILE"
+    fi
+else
+    echo "[Deploy] Configuração da Vercel (.vercel) já existente." | tee -a "$LOG_FILE"
+fi
+
 if ! pgrep -f "backend/main.py" > /dev/null; then
     echo "[Deploy] Subindo backend/main.py..." | tee -a "$LOG_FILE"
     nohup python3 backend/main.py >> "$PROJECT_DIR/backend.log" 2>&1 &
