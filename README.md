@@ -19,7 +19,7 @@
 Para colocar o projeto em funcionamento certifique-se de ter um ambiente Linux ou Windows 10 e Posteriores via _(Windows Subsystem for Linux)_ e todas as dependências listadas abaixo:
 - `docker.io` e `docker-compose-v2`
 - `python3-venv` / `python3-pip` - `libnotify-bin`
-- *(Opcional)* Vercel CLI e Tailscale _(Rootless)_ caso Opte pela Opção de Debug Remoto no _install_scraper.sh_.
+- `vercel-cli` / `taiscale` *(Opcional)*
 
 ## 🔧 Configuração
 
